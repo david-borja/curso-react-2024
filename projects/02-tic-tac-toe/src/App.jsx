@@ -1,56 +1,10 @@
 import { useState } from 'react'
 import confetti from 'canvas-confetti'
-
-const TURNS = {
-  X: 'x',
-  O: 'o'
-}
-
-const Square = ({ children, updateBoard, isSelected }) => {
-  const className = `square ${isSelected ? 'is-selected' : ''}`
-
-  const handleClick = () => {
-    updateBoard()
-  }
-  return (
-    <div onClick={handleClick} className={className}>
-      {children}
-    </div>
-  )
-}
-
-const WINNER_COMBOS = [
-  // rows
-  [0, 1, 2],
-  [3, 4, 5],
-  [6, 7, 8],
-  // columns
-  [0, 3, 6],
-  [1, 4, 7],
-  [2, 5, 8],
-  // diagonals
-  [0, 4, 8],
-  [2, 4, 6]
-]
-
-const checkWinner = (boardToCheck) => {
-  for (const combo of WINNER_COMBOS) {
-    const [a, b, c] = combo
-    if (
-      boardToCheck[a] && // existe X u O
-      boardToCheck[a] === boardToCheck[b] && // mismo jugador en b
-      boardToCheck[a] === boardToCheck[c] // mismo jugador en c
-    ) {
-      return boardToCheck[a]
-    }
-  }
-  // no hay ganador
-  return null
-}
-
-const checkEndGame = (newBoard) => {
-  return newBoard.every((square) => square !== null)
-}
+import { Square } from './components/Square'
+import { WinnerModal } from './components/WinnerModal'
+import { Board } from './components/Board'
+import { checkEndGame, checkWinner } from './utils/board'
+import { TURNS } from './enums'
 
 function App() {
   const [board, setBoard] = useState(Array(9).fill(null))
@@ -83,36 +37,12 @@ function App() {
     <main className='board'>
       <h1>Tic Tac Toe</h1>
       <button onClick={resetGame}>Reset del juego</button>
-      <section className='game'>
-        {board.map((square, index) => {
-          return (
-            <Square
-              key={index}
-              index={index}
-              updateBoard={() => updateBoard(index)}
-            >
-              {square}
-            </Square>
-          )
-        })}
-      </section>
+      <Board board={board} updateBoard={updateBoard} />
       <section className='turn'>
         <Square isSelected={turn === TURNS.X}>{TURNS.X}</Square>
         <Square isSelected={turn === TURNS.O}>{TURNS.O}</Square>
       </section>
-      {winner !== null && (
-        <section className='winner'>
-          <div className='text'>
-            <h2>{winner === false ? 'Empate' : 'Ganó:'}</h2>
-            <header className='win'>
-              {winner && <Square>{winner}</Square>}
-            </header>
-            <footer>
-              <button onClick={resetGame}>Empezar de nuevo</button>
-            </footer>
-          </div>
-        </section>
-      )}
+      <WinnerModal winner={winner} resetGame={resetGame} />
     </main>
   )
 }
