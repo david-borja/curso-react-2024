@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-function App () {
+const FollowMouse = () => {
   const [enabled, setEnabled] = useState(false)
   const [position, setPosition] = useState({ x: 0, y: 0 })
 
@@ -19,14 +19,14 @@ function App () {
     // --> cuando el componente se desmonta
     // --> cuando cambian las dependencias, antes de ejecutar el efecto de nuevo
     return () => {
+      console.log('cleanup')
       window.removeEventListener('pointermove', handleMove)
     }
 
     // truco para para debugguear suscripción a eventos: en la consola del navegador poner: getEventListeners(window) -> ahí podemos ver el número de veces que se ha suscrito a un evento. Si no se están limpiando, las suscripciones se acumulan. Debe haber solo una
   }, [enabled])
-
   return (
-    <main>
+    <>
       <div style={{
         position: 'absolute',
         backgroundColor: '#09f',
@@ -41,6 +41,14 @@ function App () {
       }}
       />
       <button onClick={() => setEnabled(!enabled)}>{enabled ? 'Desactivar' : 'Activar'} seguir puntero</button>
+    </>
+  )
+}
+
+function App () {
+  return (
+    <main>
+      <FollowMouse />
     </main>
   )
 }
