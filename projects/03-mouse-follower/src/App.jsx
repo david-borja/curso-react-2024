@@ -4,6 +4,7 @@ const FollowMouse = () => {
   const [enabled, setEnabled] = useState(false)
   const [position, setPosition] = useState({ x: 0, y: 0 })
 
+  // pointer move
   useEffect(() => {
     console.log('efecto')
     const handleMove = (event) => {
@@ -25,6 +26,16 @@ const FollowMouse = () => {
 
     // truco para para debugguear suscripción a eventos: en la consola del navegador poner: getEventListeners(window) -> ahí podemos ver el número de veces que se ha suscrito a un evento. Si no se están limpiando, las suscripciones se acumulan. Debe haber solo una
   }, [enabled])
+
+  // change body className
+  useEffect(() => {
+    document.body.classList.toggle('no-cursor', enabled)
+
+    return () => {
+      document.body.classList.remove('no-cursor')
+    }
+  }, [enabled])
+
   return (
     <>
       <div style={{
