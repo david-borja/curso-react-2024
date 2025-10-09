@@ -1,0 +1,23 @@
+main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* place-items: center; con esta línea se puede hacer lo mismo que con las dos líneas de arriba */
+  max-width: 800px;
+  margin: 0 auto;
+  font-family: system-ui;
+}
+
+/* si nos piden presentarlo en dos columnas, podemos hacerlo así */
+/* section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+}
+
+section img {
+  max-width: 320px;
+  height: auto;
+} */
