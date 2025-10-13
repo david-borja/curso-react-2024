@@ -19,3 +19,9 @@ y en el package ponemos esto
   }
 
 En este caso, no hace falta porque tenemos el linter configurado a nivel de monorepo
+
+Para añadir test e2e -> npm init playwright@latest
+
+Si hay problema instalando los navegadores:
+Instalar versión compatible: npm install playwright@1.25.0
+Instalar navegadores

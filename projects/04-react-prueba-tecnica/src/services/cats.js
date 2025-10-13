@@ -1,4 +1,5 @@
 const CAT_ENDPOINT_RANDOM_FACT = 'https://catfact.ninja/fact'
+export const CAT_PREFIX_IMAGE_URL = 'https://cataas.com/cat'
 
 export function getRandomFact () {
   return fetch(CAT_ENDPOINT_RANDOM_FACT)
@@ -16,7 +17,7 @@ export function getRandomFact () {
 }
 
 export function getCatImageWithWords ({ words }) {
-  return fetch(`https://cataas.com/cat/says/${words}?size=50&color=red&json=true`)
+  return fetch(`${CAT_PREFIX_IMAGE_URL}/says/${words}?size=50&color=red&json=true`)
     .then(res => {
       if (!res.ok) throw new Error('Error getting image with words')
       return res.json()
