@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import './App.css'
 import { Movies } from './components/Movies'
 import { useMovies } from './hooks/useMovies'
 import { useSearch } from './hooks/useSearch'
+import { debounce } from './utils/debounce'
 
 // para validaciones de inputs no controlados se puede usar required, pattern. En el formulario se puede usar también onValid
 
@@ -17,6 +18,8 @@ function App () {
   const { search, setSearch, error } = useSearch()
   const { movies, getMovies, loading } = useMovies({ search, sort })
   // const inputRef = useRef()
+
+  const debouncedGetMovies = useCallback(debounce(({ search }) => getMovies({ search }), 300), [getMovies])
 
   const handleSort = () => {
     setSort(!sort)
@@ -36,8 +39,9 @@ function App () {
 
   // con la forma controlada de manejar los formularios, a veces es un poqu∫ito más sencillo hacer las validaciones. Lo malo es que por ejemplo en cada onChange se está volviendo a renderizar el componente, y esto hace que el input se pueda sentir pesado
   const handleChange = (event) => {
-    const newQuery = event.target.value
-    setSearch(newQuery)
+    const newSearch = event.target.value
+    setSearch(newSearch)
+    debouncedGetMovies({ search: newSearch })
 
     // if (!newQuery) {
     //   setError('No se puede busacar una película sin texto de búsqueda')
