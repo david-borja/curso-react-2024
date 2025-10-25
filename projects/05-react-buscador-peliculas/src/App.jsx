@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import './App.css'
 import { Movies } from './components/Movies'
 import { useMovies } from './hooks/useMovies'
@@ -12,13 +13,18 @@ import { useSearch } from './hooks/useSearch'
 function App () {
   // la principal ventaja de usar un componente a usar una función renderizadora, es que el componente no se vuelve a crear cada vez que se renderiza la aplicación. Las funciones, por defecto, siempre se vuelven a crear
   // tambien facilitan la reutilización
+  const [sort, setSort] = useState(false)
   const { search, setSearch, error } = useSearch()
-  const { movies, getMovies, loading } = useMovies({ search })
+  const { movies, getMovies, loading } = useMovies({ search, sort })
   // const inputRef = useRef()
+
+  const handleSort = () => {
+    setSort(!sort)
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    getMovies()
+    getMovies({ search })
     // const fields = new FormData(event.target) // esto devuelve un FormData
     // const { query } = Object.fromEntries(new window.FormData(event.target))
     // const query = fields.get('query') // esto es para recuperar uno solo
@@ -60,6 +66,7 @@ function App () {
             onChange={handleChange}
             placeholder='Avengers, Star Wars, The Matrix ...'
           />
+          <input type='checkbox' onChange={handleSort} checked={sort} />
           {/* el último botón de un formulario es de type submit por defecto */}
           <button type='submit'>Buscar</button>
         </form>
