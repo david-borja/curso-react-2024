@@ -12,12 +12,13 @@ import { useSearch } from './hooks/useSearch'
 function App () {
   // la principal ventaja de usar un componente a usar una función renderizadora, es que el componente no se vuelve a crear cada vez que se renderiza la aplicación. Las funciones, por defecto, siempre se vuelven a crear
   // tambien facilitan la reutilización
-  const { movies } = useMovies()
   const { search, setSearch, error } = useSearch()
+  const { movies, getMovies, loading } = useMovies({ search })
   // const inputRef = useRef()
 
   const handleSubmit = (event) => {
     event.preventDefault()
+    getMovies()
     // const fields = new FormData(event.target) // esto devuelve un FormData
     // const { query } = Object.fromEntries(new window.FormData(event.target))
     // const query = fields.get('query') // esto es para recuperar uno solo
@@ -66,7 +67,7 @@ function App () {
       </header>
 
       <main>
-        <Movies movies={movies} />
+        {loading ? <p>Cargando...</p> : <Movies movies={movies} />}
       </main>
     </div>
   )
