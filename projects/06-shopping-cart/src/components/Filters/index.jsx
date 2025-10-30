@@ -1,10 +1,12 @@
 import { useId, useState } from 'react'
 import './styles.css'
+import { useFilters } from '../../../hooks/useFilters'
 
 export const DEFAULT_MAX_PRICE = 2500
 
 // TODO: fix layout shift when changing filters
-export function Filters ({ onChange }) {
+export function Filters () {
+  const { setFilters } = useFilters()
   const [maxPrice, setMaxPrice] = useState(DEFAULT_MAX_PRICE)
   const maxPriceFilterId = useId() // genera un id único para cada instancia del componente según el árbol de componentes y el órden de llamada de los hooks
   const categoryFilterId = useId()
@@ -12,7 +14,7 @@ export function Filters ({ onChange }) {
   const handleChangeMaxPrice = (event) => {
     // OJO AQUÍ, porque hay dos fuentes de la verdad
     setMaxPrice(event.target.value)
-    onChange((prevState) => ({
+    setFilters((prevState) => ({
       ...prevState,
       maxPrice: Number(event.target.value)
     }))
@@ -23,7 +25,7 @@ export function Filters ({ onChange }) {
     // estamos pasando la función de actualizar estado
     // nativa de React (setState) a un componente hijo
     // debería ser algo más abstracto en el que no haga falta saber cómo actualizar el estado
-    onChange(prevState => ({
+    setFilters(prevState => ({
       ...prevState,
       category: event.target.value
     }))
