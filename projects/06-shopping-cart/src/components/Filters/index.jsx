@@ -1,19 +1,14 @@
-import { useId, useState } from 'react'
+import { useId } from 'react'
 import './styles.css'
 import { useFilters } from '../../../hooks/useFilters'
 
-export const DEFAULT_MAX_PRICE = 2500
-
 // TODO: fix layout shift when changing filters
 export function Filters () {
-  const { setFilters } = useFilters()
-  const [maxPrice, setMaxPrice] = useState(DEFAULT_MAX_PRICE)
+  const { filters, setFilters } = useFilters()
   const maxPriceFilterId = useId() // genera un id único para cada instancia del componente según el árbol de componentes y el órden de llamada de los hooks
   const categoryFilterId = useId()
 
   const handleChangeMaxPrice = (event) => {
-    // OJO AQUÍ, porque hay dos fuentes de la verdad
-    setMaxPrice(event.target.value)
     setFilters((prevState) => ({
       ...prevState,
       maxPrice: Number(event.target.value)
@@ -36,8 +31,8 @@ export function Filters () {
       <div>
         <label htmlFor={maxPriceFilterId}>Price</label>
         {/* en una aplicación grande es peligroso ponerle aquí id='price' porque es demasiado genérico y puede ser que lo tengamos en otro sitio y que cause que algo funcione mal */}
-        <input type='range' id={maxPriceFilterId} min='0' max='3000' value={maxPrice} onChange={handleChangeMaxPrice} />
-        <span>${maxPrice}</span>
+        <input type='range' id={maxPriceFilterId} min='0' max='3000' value={filters.maxPrice} onChange={handleChangeMaxPrice} />
+        <span>${filters.maxPrice}</span>
       </div>
 
       <div>

@@ -1,6 +1,7 @@
 import { createContext, useState } from 'react'
-import { DEFAULT_MAX_PRICE } from '../src/components/Filters'
 
+const DEFAULT_CATEGORY = 'all'
+const DEFAULT_MAX_PRICE = 2500
 // El contexto es una forma de inyección de dependencias
 // Puede ser estático para configuraciones globales (tema, idioma, etc)
 
@@ -10,7 +11,7 @@ export const FiltersContext = createContext({})
 // 2. Crear el Provider, para proveer el contexto
 export function FiltersProvider ({ children }) {
   const [filters, setFilters] = useState({
-    category: 'all',
+    category: DEFAULT_CATEGORY,
     maxPrice: DEFAULT_MAX_PRICE
   })
   return (
