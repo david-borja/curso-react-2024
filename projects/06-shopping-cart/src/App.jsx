@@ -5,6 +5,8 @@ import { Header } from './components/Header'
 import { Footer } from './components/Footer'
 import { isDevelopment } from './config'
 import { useFilters } from '../hooks/useFilters'
+import { Cart } from './components/Cart'
+import { CartProvider } from '../contexts/cart'
 
 function App () {
   const { filterProducts } = useFilters()
@@ -12,15 +14,16 @@ function App () {
   const filteredProducts = filterProducts(products)
 
   return (
-    <>
+    <CartProvider>
       {/* esta es una manera para evitar el prop drilling: usar una composición para que el Header renderice los children sin hacer falta que sepa lo que es. Pero esto no siempre es posible */}
       {/* <Header>
         <Filters onChange={setFilters} />
       </Header> */}
       <Header />
+      <Cart />
       <Products products={filteredProducts} />
       {isDevelopment && <Footer />}
-    </>
+    </CartProvider>
   )
 }
 
