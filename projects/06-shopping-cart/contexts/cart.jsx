@@ -1,32 +1,30 @@
-import { createContext, useState } from 'react'
+import { createContext, useReducer } from 'react'
+import { CART_ACTION_TYPES, cartInitialState, cartReducer } from '../reducers/cart'
 
 export const CartContext = createContext()
 
 export function CartProvider ({ children }) {
-  const [cart, setCart] = useState([])
+  // dispatch es la función que se usa para enviar acciones al reducer
+  // incluso este useReducer lo podríamos extraer a un custom hook
+  const [state, dispatch] = useReducer(cartReducer, cartInitialState)
 
-  const addToCart = (product) => {
-    const productInCartIndex = cart.findIndex(item => item.id === product.id)
+  const addToCart = (product) => dispatch({
+    type: CART_ACTION_TYPES.ADD_TO_CART,
+    payload: product
+  })
 
-    if (productInCartIndex >= 0) {
-      const newCart = structuredClone(cart)
-      newCart[productInCartIndex].quantity += 1
-      setCart(newCart)
-    } else {
-      setCart(prevState => [...prevState, { ...product, quantity: 1 }])
-    }
-  }
-  const clearCart = () => {
-    setCart([])
-  }
+  const removeFromCart = (product) => dispatch({
+    type: CART_ACTION_TYPES.REMOVE_FROM_CART,
+    payload: product
+  })
 
-  const removeFromCart = (product) => {
-    setCart(prevState => prevState.filter(item => item.id !== product.id))
-  }
+  const clearCart = () => dispatch({
+    type: CART_ACTION_TYPES.CLEAR_CART
+  })
 
   return (
     <CartContext.Provider value={{
-      cart,
+      cart: state,
       addToCart,
       clearCart,
       removeFromCart
