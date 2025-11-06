@@ -12,7 +12,7 @@ export function navigate (href) {
   window.dispatchEvent(navigationEvent)
 }
 
-export function Link ({ target, to, ...props }) {
+export function Link ({ resetScroll = false, target, to, ...props }) {
   const handleClick = (event) => {
     const isMainEvent = event.button === BUTTONS.PRIMARY // primary click (botón izquierdo en diestros)
     const isModifiedEvent = event.metaKey || event.altKey || event.ctrlKey || event.shiftKey
@@ -24,6 +24,7 @@ export function Link ({ target, to, ...props }) {
     if (isMainEvent && isManageableEvent && !isModifiedEvent) {
       event.preventDefault()
       navigate(to) // navegación con SPA
+      if (resetScroll) window.scrollTo(0, 0) // reseteamos el scroll a la parte superior
     }
   }
   // el ancor renderiza bien el children debido al spread de props
