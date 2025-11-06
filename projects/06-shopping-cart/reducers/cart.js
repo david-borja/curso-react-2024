@@ -11,34 +11,34 @@ export const CART_ACTION_TYPES = {
   CLEAR_CART: 'CLEAR_CART'
 }
 
+const actions = {
+  [CART_ACTION_TYPES.ADD_TO_CART]: (state, payload) => {
+    const { id } = payload
+    const productInCartIndex = state.findIndex(item => item.id === id)
+
+    // producto ya en el carrito
+    if (productInCartIndex >= 0) {
+      const newCart = structuredClone(state)
+      newCart[productInCartIndex].quantity += 1
+      return newCart
+    }
+
+    // producto no está en el carrito
+    const newCart = [...state, { ...payload, quantity: 1 }]
+    return newCart
+  },
+  [CART_ACTION_TYPES.REMOVE_FROM_CART]: (state, payload) => {
+    const { id } = payload
+    return state.filter(item => item.id !== id)
+  },
+  [CART_ACTION_TYPES.CLEAR_CART]: () => {
+    return cartInitialState
+  }
+}
+
 export function cartReducer (state, action) {
   const { type: actionType, payload: actionPayload } = action
 
-  const actions = {
-    [CART_ACTION_TYPES.ADD_TO_CART]: () => {
-      const { id } = actionPayload
-      const productInCartIndex = state.findIndex(item => item.id === id)
-
-      // producto ya en el carrito
-      if (productInCartIndex >= 0) {
-        const newCart = structuredClone(state)
-        newCart[productInCartIndex].quantity += 1
-        return newCart
-      }
-
-      // producto no está en el carrito
-      const newCart = [...state, { ...actionPayload, quantity: 1 }]
-      return newCart
-    },
-    [CART_ACTION_TYPES.REMOVE_FROM_CART]: () => {
-      const { id } = actionPayload
-      return state.filter(item => item.id !== id)
-    },
-    [CART_ACTION_TYPES.CLEAR_CART]: () => {
-      return cartInitialState
-    }
-  }
-
   const actionCallback = actions[actionType]
-  return actionCallback ? actionCallback() : state
+  return actionCallback ? actionCallback(state, actionPayload) : state
 }

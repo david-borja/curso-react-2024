@@ -1,26 +1,18 @@
-import { createContext, useReducer } from 'react'
-import { CART_ACTION_TYPES, cartInitialState, cartReducer } from '../reducers/cart'
+import { createContext } from 'react'
+import { useCartReducer } from '../hooks/useCartReducer'
 
+// 1. crear el contexto
 export const CartContext = createContext()
 
+// 2. crear el provider y exportarlo
+// la dependencia de usar React context es mínima
 export function CartProvider ({ children }) {
-  // dispatch es la función que se usa para enviar acciones al reducer
-  // incluso este useReducer lo podríamos extraer a un custom hook
-  const [state, dispatch] = useReducer(cartReducer, cartInitialState)
-
-  const addToCart = (product) => dispatch({
-    type: CART_ACTION_TYPES.ADD_TO_CART,
-    payload: product
-  })
-
-  const removeFromCart = (product) => dispatch({
-    type: CART_ACTION_TYPES.REMOVE_FROM_CART,
-    payload: product
-  })
-
-  const clearCart = () => dispatch({
-    type: CART_ACTION_TYPES.CLEAR_CART
-  })
+  const {
+    state,
+    addToCart,
+    clearCart,
+    removeFromCart
+  } = useCartReducer()
 
   return (
     <CartContext.Provider value={{
