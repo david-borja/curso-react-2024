@@ -1,4 +1,4 @@
-import { navigate } from '../components/Link'
+import { Link } from '../components/Link'
 
 export default function AboutPage () {
   return (
@@ -8,7 +8,7 @@ export default function AboutPage () {
         <img src='https://reactrouter.com/_brand/React%20Router%20Brand%20Assets/React%20Router%20Logo/Light.svg' width='150px' />
         <p>Hola! Esta es la página About</p>
       </div>
-      <button onClick={() => navigate('/')}>Ir a Home</button>
+      <Link to='/'>Ir a la Home</Link>
     </>
   )
 }
