@@ -1,15 +1,24 @@
 {
   "name": "07-dbm-router",
-  "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
+  "main": "lib/index.js",
+  "module" : "lib/index.js",
+  "exports": {
+    ".": {
+      "import": "./lib/index.js",
+      "require": "./lib/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest",
-    "test:ui": "vitest --ui"
+    "test:ui": "vitest --ui",
+    "prepare": "swc src/components/Router.jsx src/components/Route.jsx src/components/Link.jsx src/hooks/useLocation.js src/utils/index.js src/enums.js src/index.jsx -d lib"
   },
   "dependencies": {
     "path-to-regexp": "8.3.0",
@@ -17,6 +26,8 @@
     "react-dom": "19.1.1"
   },
   "devDependencies": {
+    "@swc/cli": "0.7.8",
+    "@swc/core": "1.14.0",
     "@testing-library/react": "16.3.0",
     "@types/react": "19.1.16",
     "@types/react-dom": "19.1.9",
