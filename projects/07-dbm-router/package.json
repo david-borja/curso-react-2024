@@ -1,14 +1,14 @@
 {
   "name": "dbm-router",
   "author": "David Borja Martinez",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
-  "main": "lib/index.js",
-  "module" : "lib/index.js",
+  "main": "lib/src/index.js",
+  "module": "lib/src/index.js",
   "exports": {
     ".": {
-      "import": "./lib/index.js",
-      "require": "./lib/index.js"
+      "import": "./lib/src/index.js",
+      "require": "./lib/src/index.js"
     },
     "./package.json": "./package.json"
   },
