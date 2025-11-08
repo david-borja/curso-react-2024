@@ -1,28 +1,16 @@
-import { Children, useEffect, useState } from 'react'
+import { Children } from 'react'
 import { match } from 'path-to-regexp'
-import { EVENTS } from '../enums'
+import { useLocation } from '../hooks/useLocation'
 
 // Nota: no debería cambiar lo que renderiza el Router por las query params, solo por la ruta (path)
 
 // Ojo con children, porque cuando solo es uno, no
-export function Router ({ children, routes = [], defaultComponent: DefaultComponent = () => <h1>404 Not Found</h1> }) {
-  const [currentPath, setCurrentPath] = useState(window.location.pathname)
-
-  useEffect(() => {
-    const onLocationChange = () => {
-      setCurrentPath(window.location.pathname)
-    }
-
-    window.addEventListener(EVENTS.PUSHSTATE, onLocationChange)
-    window.addEventListener(EVENTS.POPSTATE, onLocationChange) // este evento sí es nativo
-
-    return () => {
-      // muy importante que sea la misma referencia que en el addEventListener
-      window.removeEventListener(EVENTS.POPSTATE, onLocationChange)
-      window.removeEventListener(EVENTS.POPSTATE, onLocationChange)
-    }
-  }, [])
-
+export function Router ({
+  children,
+  routes = [],
+  defaultComponent: DefaultComponent = () => <h1>404 Not Found</h1>
+}) {
+  const { currentPath } = useLocation()
   let routeParams = {}
 
   // es una utilidad de react que te permite iterar los children como si fueran un array. Es un poco raro, se le pasa primero el children y luego el callback
