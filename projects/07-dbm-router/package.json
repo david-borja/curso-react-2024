@@ -20,9 +20,10 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "test:ui": "vitest --ui",
-    "prepare": "swc src/components/Router.jsx src/components/Route.jsx src/components/Link.jsx src/hooks/useLocation.js src/utils/index.js src/enums.js src/index.jsx -d lib"
+    "prepare": "pnpm test && swc src/components/Router.jsx src/components/Route.jsx src/components/Link.jsx src/hooks/useLocation.js src/utils/index.js src/enums.js src/index.jsx -d lib"
   },
   "dependencies": {
     "path-to-regexp": "8.3.0"
