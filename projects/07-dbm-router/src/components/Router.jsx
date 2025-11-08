@@ -30,7 +30,7 @@ export function Router ({
     const matched = matcherUrl(currentPath)
     if (!matched) return false
 
-    routeParams = matched.params // {query: 'react' } // /search/react
+    routeParams = matched.params // { query: 'react' } // /search/react
     return true
   })?.Component
 
