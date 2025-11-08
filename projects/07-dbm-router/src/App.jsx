@@ -1,33 +1,35 @@
-import './App.css'
-import HomePage from './pages/Home'
-import AboutPage from './pages/About'
+import { lazy, Suspense } from 'react'
 import { Router } from './components/Router'
-import Page404 from './pages/Page404'
-import SearchPage from './pages/Search'
+import HomePage from './pages/Home' // la home prefiero que no sea lazy
 import { Route } from './components/Route'
+import './App.css'
+
+const LazyPage404 = lazy(() => import('./pages/Page404'))
+const LazyAboutPage = lazy(() => import('./pages/About'))
+
+// import('./pages/About') // import dinámico -> devuelve una promesa
+// se podría meter en una función
+
+// function getAboutPage () {
+//   return import('./pages/About')
+// }
 
 const routes = [
-  // {
-  //   path: '/',
-  //   Component: HomePage
-  // },
-  // {
-  //   path: '/about',
-  //   Component: AboutPage
-  // },
   {
     path: '/search/:query',
-    Component: SearchPage
+    Component: lazy(() => import('./pages/Search'))
   }
 ]
 
 function App () {
   return (
     <main>
-      <Router routes={routes} defaultComponent={Page404}>
-        <Route path='/' Component={HomePage} />
-        <Route path='/about' Component={AboutPage} />
-      </Router>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Router routes={routes} defaultComponent={LazyPage404}>
+          <Route path='/' Component={HomePage} />
+          <Route path='/about' Component={LazyAboutPage} />
+        </Router>
+      </Suspense>
     </main>
   )
 }
