@@ -21,7 +21,9 @@
     "prepare": "swc src/components/Router.jsx src/components/Route.jsx src/components/Link.jsx src/hooks/useLocation.js src/utils/index.js src/enums.js src/index.jsx -d lib"
   },
   "dependencies": {
-    "path-to-regexp": "8.3.0",
+    "path-to-regexp": "8.3.0"
+  },
+  "peerDependencies": {
     "react": "19.1.1",
     "react-dom": "19.1.1"
   },
