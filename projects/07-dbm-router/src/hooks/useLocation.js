@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 import { EVENTS } from '../enums'
+import { getCurrentPath } from '../utils'
 
 export function useLocation () {
-  const [currentPath, setCurrentPath] = useState(window.location.pathname)
+  const [currentPath, setCurrentPath] = useState(getCurrentPath())
 
   useEffect(() => {
     const onLocationChange = () => {
-      setCurrentPath(window.location.pathname)
+      setCurrentPath(getCurrentPath())
     }
 
     window.addEventListener(EVENTS.PUSHSTATE, onLocationChange)
