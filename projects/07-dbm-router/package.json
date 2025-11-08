@@ -1,5 +1,6 @@
 {
   "name": "dbm-router",
+  "author": "David Borja Martinez",
   "version": "0.0.1",
   "type": "module",
   "main": "lib/index.js",
@@ -11,6 +12,9 @@
     },
     "./package.json": "./package.json"
   },
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "vite build",
