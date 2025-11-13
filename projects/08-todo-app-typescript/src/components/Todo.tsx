@@ -5,7 +5,7 @@ import type { Todo as TodoType } from '../types'
 
 // type Props = TodoType
 interface Props extends TodoType {
-  onRemoveTodo: (id: string) => void
+  onRemoveTodo: () => void
 }
 
 export function Todo({ id, title, completed, onRemoveTodo }: Props): JSX.Element {
@@ -20,9 +20,7 @@ export function Todo({ id, title, completed, onRemoveTodo }: Props): JSX.Element
       <label>{title}</label>
       <button
         className='destroy'
-        onClick={() => {
-          onRemoveTodo(id)
-        }}
+        onClick={onRemoveTodo}
       />
     </div>
   )

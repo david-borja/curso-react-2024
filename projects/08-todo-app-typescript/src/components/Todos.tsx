@@ -21,7 +21,7 @@ export function Todos({ todos, onRemoveTodo }: Props): JSX.Element {
             title={todo.title}
             completed={todo.completed}
             id={todo.id}
-            onRemoveTodo={onRemoveTodo}
+            onRemoveTodo={() => onRemoveTodo(todo.id)}
           />
         </li>
       ))}
