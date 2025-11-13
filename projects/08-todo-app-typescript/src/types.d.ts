@@ -8,5 +8,11 @@ export interface Todo {
   completed: boolean
 }
 
+// La ventaja de usar los Pick es que si en el futuro el id cambia de tipo, por ejemplo a number
+// entonces solo hay que cambiarlo en un sitio, en la interfaz Todo
+export type TodoTitle = Pick<Todo, 'title'>
+export type TodoId = Pick<Todo, 'id'>
+export type TodoCompleted = Pick<Todo, 'completed'>
+
 // también se puede hacer type ListOfTodos = Array<Todo>
 export type ListOfTodos = Todo[]
