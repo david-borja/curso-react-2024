@@ -31,7 +31,10 @@ export default defineConfig([
       // ❌ Desactiva la regla base de ESLint (que no entiende TS)
       'no-unused-vars': 'off',
       // ✅ Usa la versión de @typescript-eslint
-      '@typescript-eslint/no-unused-vars': ['warn']
+      '@typescript-eslint/no-unused-vars': ['warn'],
+      // Con esta regla, nos ayuda a usar la inferencia de tipos de TypeScript para lo que retornan las funciones
+      // y de este modo evitamos tener que tipar cosas innecesariamente
+      '@typescript-eslint/consistent-type-definitions': ['error', 'interface']
     },
     settings: {
       react: { version: 'detect' },
