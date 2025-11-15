@@ -1,3 +1,9 @@
+import type { AUTO_LANGUAGE, SUPPORTED_LANGUAGES } from './enums'
+
+export type Language = keyof typeof SUPPORTED_LANGUAGES
+export type AutoLanguage = typeof AUTO_LANGUAGE
+export type FromLanguage = Language | AutoLanguage // en el fromLanguage tenemos la posibilidad de detectar el idioma
+
 export interface State {
   fromLanguage: string
   toLanguage: string
