@@ -1,3 +1,4 @@
+import type React from 'react'
 import type { JSX } from 'react'
 import type { Todo as TodoType } from '../types'
 // otra forma de hacerlo: 

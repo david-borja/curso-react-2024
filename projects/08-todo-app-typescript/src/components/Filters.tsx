@@ -1,6 +1,6 @@
-import type { JSX } from 'react';
-import type { FilterValue } from '../types';
-import { FILTERS_BUTTONS } from '../enums';
+import type { JSX } from 'react'
+import type { FilterValue } from '../types'
+import { FILTERS_BUTTONS } from '../enums'
 
 interface Props {
   onFilterChange: (filter: FilterValue) => void

@@ -1,6 +1,6 @@
-import type { JSX } from 'react';
-import type { FilterValue } from '../types';
-import { Filters } from './Filters';
+import type { JSX } from 'react'
+import type { FilterValue } from '../types'
+import { Filters } from './Filters'
 
 interface Props {
   activeCount: number

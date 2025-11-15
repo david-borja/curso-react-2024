@@ -34,7 +34,7 @@ export default defineConfig([
       // ❌ Desactiva la regla base de ESLint (que no entiende TS)
       'no-unused-vars': 'off',
       // ✅ Usa la versión de @typescript-eslint
-      '@typescript - eslint / no - unused - vars': ['warn']
+      '@typescript-eslint/no-unused-vars': ['warn']
     },
     settings: {
       react: { version: 'detect' },

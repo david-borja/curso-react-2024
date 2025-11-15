@@ -1,6 +1,6 @@
-import type { JSX } from 'react';
-import type { TodoTitle } from '../types';
-import { CreateTodo } from './CreateTodo';
+import type { JSX } from 'react'
+import type { TodoTitle } from '../types'
+import { CreateTodo } from './CreateTodo'
 
 interface Props {
   onAddTodo: ({ title }: TodoTitle) => void;
