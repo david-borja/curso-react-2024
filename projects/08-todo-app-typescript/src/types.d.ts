@@ -1,5 +1,7 @@
 // el .d es de declaration, es decir, no tiene código, solo tipos
 
+import type { TODO_FILTERS } from './enums'
+
 // type es para un tipo, y no los puedes extender facilmente
 // en cambio, interface es el contrato de un objeto y se puede extender
 export interface Todo {
@@ -18,3 +20,5 @@ export type TodoCompleted = Pick<Todo, 'isCompleted'>
 export type ListOfTodos = Todo[]
 
 // en lugar de any, es mejor usar unknown
+
+export type FilterValue = typeof TODO_FILTERS[keyof typeof TODO_FILTERS]
