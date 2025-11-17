@@ -1,5 +1,8 @@
 import { useReducer } from 'react'
-import type { Action, FromLanguage, Language, State } from '../types'
+import type {
+  Action, FromLanguage, Language, State 
+} from '../types'
+import { AUTO_LANGUAGE } from '../enums'
 
 // 1. Create a initial state
 const initialState: State = {
@@ -19,6 +22,10 @@ function reducer(
   const { type } = action
 
   if (type === 'SWAP_LANGUAGES') {
+    // lógica del estado dentro del reducer
+    // es muy interesante hacerlo aquí porque lo evitamos tener en los componentes
+    if (state.fromLanguage === AUTO_LANGUAGE) return state
+
     return {
       ...state,
       fromLanguage: state.toLanguage,

@@ -14,8 +14,6 @@ export function Filters(
   return (
     <ul className='filters'>
       {
-        // ojo a esta manera de hacer el destructuring en el map
-        // al hacer el con el array, en el primer elemento está la key y en el segundo el value
         Object.entries(FILTERS_BUTTONS).map(([key, { href, literal }]) => {
           const isSelected = key === filterSelected
           const className = isSelected ? 'selected' : ''
