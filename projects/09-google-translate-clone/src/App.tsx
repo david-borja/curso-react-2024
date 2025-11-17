@@ -3,36 +3,50 @@ import {
   Container,
   Row,
   Col,
-  Button
+  Button,
+  Stack
 } from 'react-bootstrap'
-import { useStore } from './hooks/useStore'
 import './App.css'
+import { useStore } from './hooks/useStore'
 import { AUTO_LANGUAGE } from './enums'
 import { ArrowsIcon } from './components/Icons'
 import { LanguageSelector } from './components/LanguageSelector'
+import { SectionType } from './types.d'
+import { TextArea } from './components/TextArea'
 
 function App() {
   const {
+    loading,
     fromLanguage,
     toLanguage,
+    fromText,
+    result,
+    setFromText,
+    setResult,
     swapLanguages,
     setFromLanguage,
     setToLanguage
   } = useStore()
   return (
     <Container fluid>
-      <h1>Google Translate</h1>
+      <h2>Google Translate</h2>
 
       <Row>
         <Col>
-          <LanguageSelector
-            onChange={setFromLanguage}
-            type='from'
-            value={fromLanguage}
-          />
-          {fromLanguage}
+          <Stack gap={2}>
+            <LanguageSelector
+              onChange={setFromLanguage}
+              type={SectionType.From}
+              value={fromLanguage}
+            />
+            <TextArea
+              type={SectionType.From}
+              value={fromText}
+              onChange={setFromText}
+            />
+          </Stack>
         </Col>
-        <Col>
+        <Col xs='auto'>
           <Button
             onClick={swapLanguages}
             disabled={fromLanguage === AUTO_LANGUAGE}
@@ -40,15 +54,21 @@ function App() {
           >
             <ArrowsIcon />
           </Button>
-          {/* Aquí irá el componente TextArea */}
         </Col>
         <Col>
-          <LanguageSelector
-            onChange={setToLanguage}
-            type='to'
-            value={toLanguage}
-          />
-          {toLanguage}
+          <Stack gap={2}>
+            <LanguageSelector
+              onChange={setToLanguage}
+              type={SectionType.To}
+              value={toLanguage}
+            />
+            <TextArea
+              type={SectionType.To}
+              value={result}
+              onChange={setResult}
+              loading={loading}
+            />
+          </Stack>
         </Col>
       </Row>
     </Container>
