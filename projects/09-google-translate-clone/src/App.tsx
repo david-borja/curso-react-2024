@@ -8,8 +8,8 @@ import {
 } from 'react-bootstrap'
 import './App.css'
 import { useStore } from './hooks/useStore'
-import { AUTO_LANGUAGE } from './enums'
-import { ArrowsIcon } from './components/Icons'
+import { AUTO_LANGUAGE, VOICE_LANGUAGE } from './enums'
+import { ArrowsIcon, ClipboardIcon, SpeakerIcon } from './components/Icons'
 import { LanguageSelector } from './components/LanguageSelector'
 import { SectionType } from './types.d'
 import { TextArea } from './components/TextArea'
@@ -42,6 +42,17 @@ function App() {
       })
       .catch(() => { setResult('Error en la traducción') })
   }, [debouncedFromText, fromLanguage, toLanguage])
+
+  const handleClipboard = () => {
+    navigator.clipboard.writeText(result).catch(() => { })
+  }
+
+  const handleSpeak = () => {
+    const utterance = new SpeechSynthesisUtterance(result)
+    utterance.lang = VOICE_LANGUAGE[toLanguage]
+    utterance.rate = 0.9
+    speechSynthesis.speak(utterance)
+  }
 
   return (
     <Container fluid>
@@ -78,12 +89,28 @@ function App() {
               type={SectionType.To}
               value={toLanguage}
             />
-            <TextArea
-              type={SectionType.To}
-              value={result}
-              onChange={setResult}
-              loading={loading}
-            />
+            <div style={{ position: 'relative' }}>
+              <TextArea
+                type={SectionType.To}
+                value={result}
+                onChange={setResult}
+                loading={loading}
+              />
+              <div style={{ position: 'absolute', left: 0, bottom: 0, display: 'flex' }}>
+                <Button
+                  variant='link'
+                  onClick={handleClipboard}
+                >
+                  <ClipboardIcon />
+                </Button>
+                <Button
+                  variant='link'
+                  onClick={handleSpeak}
+                >
+                  <SpeakerIcon />
+                </Button>
+              </div>
+            </div>
           </Stack>
         </Col>
       </Row>
