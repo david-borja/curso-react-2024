@@ -13,6 +13,9 @@ import { ArrowsIcon } from './components/Icons'
 import { LanguageSelector } from './components/LanguageSelector'
 import { SectionType } from './types.d'
 import { TextArea } from './components/TextArea'
+import { useEffect } from 'react'
+import { translate } from './services/translate'
+import { useDebounce } from './hooks/useDebounce'
 
 function App() {
   const {
@@ -27,6 +30,19 @@ function App() {
     setFromLanguage,
     setToLanguage
   } = useStore()
+  const debouncedFromText = useDebounce(fromText)
+
+  useEffect(() => {
+    if (debouncedFromText === '') return
+    const text = fromText === result ? fromText : debouncedFromText
+    translate({ fromLanguage, toLanguage, text })
+      .then(result => {
+        if (result == null) return // esta validación con == en JS no se usa mucho, pero en TS tiene bastante sentido
+        setResult(result)
+      })
+      .catch(() => { setResult('Error en la traducción') })
+  }, [debouncedFromText, fromLanguage, toLanguage])
+
   return (
     <Container fluid>
       <h2>Google Translate</h2>

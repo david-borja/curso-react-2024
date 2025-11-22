@@ -4,7 +4,7 @@ import { SUPPORTED_LANGUAGES } from '../enums'
 const apiKey = import.meta.env.VITE_OPENAI_API_KEY
 
 
-const openai = new OpenAI({ apiKey })
+const openai = new OpenAI({ apiKey, dangerouslyAllowBrowser: true })
 
 interface Props {
   fromLanguage: FromLanguage
