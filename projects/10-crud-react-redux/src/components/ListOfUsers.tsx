@@ -1,27 +1,9 @@
 import './ListOfUsers.css'
-
-const users = [
-  {
-    id: '1',
-    name: 'Yazman Rodriguez',
-    email: 'yazmanito@gmail.com',
-    github: 'yazmanito'
-  },
-  {
-    id: '2',
-    name: 'John Doe',
-    email: 'leo@gmail.com',
-    github: 'Leo'
-  },
-  {
-    id: '3',
-    name: 'Haakon Dahlberg',
-    email: 'haakon@gmail.com',
-    github: 'midudev'
-  }
-]
+import { useAppSelector } from '../hooks/store'
 
 export function ListOfUsers() {
+  const users = useAppSelector((state) => state.users)
+
   return (
     <div className='users-container'>
       <div className='users-card'>
