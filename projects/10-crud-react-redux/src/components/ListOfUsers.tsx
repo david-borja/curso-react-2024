@@ -1,14 +1,19 @@
 import './ListOfUsers.css'
-import { useAppDispatch, useAppSelector } from '../hooks/store'
-import { deleteUserById, type UserId } from '../store/users/slice'
+import { useAppSelector } from '../hooks/store'
+import { useUserActions } from '../hooks/useUserActions'
+// import { useAppDispatch, useAppSelector } from '../hooks/store'
+// import { deleteUserById, type UserId } from '../store/users/slice'
 
 export function ListOfUsers() {
   const users = useAppSelector((state) => state.users)
-  const dispatch = useAppDispatch()
+  const { removeUser } = useUserActions()
+  // Esto funciona, pero es mejor crear un custom hook para que 
+  // el componente no sepa la implementación del store
+  // const dispatch = useAppDispatch()
 
-  const handleRemoveUser = (id: UserId) => {
-    dispatch(deleteUserById(id))
-  }
+  // const handleRemoveUser = (id: UserId) => {
+  //   dispatch(deleteUserById(id))
+  // }
 
   return (
     <div className='users-container'>
@@ -43,7 +48,7 @@ export function ListOfUsers() {
                     <span className='status-badge'>Active</span>
                   </td>
                   <td>
-                    <button onClick={() => handleRemoveUser(user.id)} type='button'>
+                    <button onClick={() => removeUser(user.id)} type='button'>
                       <svg
                         style={{ color: 'red', height: '18px', width: '18px' }}
                         xmlns='http://www.w3.org/2000/svg'
