@@ -1,4 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
+
+export type UserId = string
 
 export interface User {
   name: string
@@ -7,7 +9,7 @@ export interface User {
 }
 
 export interface UserWithId extends User {
-  id: string
+  id: UserId
 }
 
 const initialState: UserWithId[] = [
@@ -34,7 +36,16 @@ const initialState: UserWithId[] = [
 export const usersSlice = createSlice({
   name: 'users',
   initialState,
-  reducers: {}
+  reducers: {
+    deleteUserById: (state, action: PayloadAction<UserId>) => {
+      const id = action.payload
+      return state.filter((user) => user.id !== id)
+    }
+  }
 })
 
 export default usersSlice.reducer
+// Redux toolkit nos permite exportar las acciones de esta manera
+// Y por tanto, prescindir de las strings de los tipos de acción
+// De esta manera, tenemos menos boilerplate y menos margen de error
+export const { deleteUserById } = usersSlice.actions
