@@ -1,18 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 
-export type UserId = string
-
-export interface User {
-  name: string
-  email: string
-  github: string
-}
-
-export interface UserWithId extends User {
-  id: UserId
-}
-
-const initialState: UserWithId[] = [
+const DEFAULT_STATE = [
   {
     id: '1',
     name: 'Yazman Rodriguez',
@@ -33,6 +21,24 @@ const initialState: UserWithId[] = [
   }
 ]
 
+export type UserId = string
+
+export interface User {
+  name: string
+  email: string
+  github: string
+}
+
+export interface UserWithId extends User {
+  id: UserId
+}
+
+const initialState: UserWithId[] = (() => {
+  const persistedState = localStorage.getItem('__redux__state__')
+  return persistedState ? JSON.parse(persistedState).users : DEFAULT_STATE
+})()
+
+// la lógica de los reducers es JS puro que es agnostico a redux y react. Se podría dejar así, porque apenas se incluye redux en este archivo
 export const usersSlice = createSlice({
   name: 'users',
   initialState,
