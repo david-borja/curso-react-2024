@@ -39,12 +39,21 @@ const initialState: UserWithId[] = (() => {
 })()
 
 // la lógica de los reducers es JS puro que es agnostico a redux y react. Se podría dejar así, porque apenas se incluye redux en este archivo
+
+// Habría que evitar incorporar lógica asíncrona en los reducers (como llamadas a APIs) y no usar thunks. Para eso es mejor usar react-query
+
 export const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {
     addNewUser: (state, action: PayloadAction<User>) => {
       const id = crypto.randomUUID()
+      // una de las ventajas de redux toolkit es que no hace falta devolver un nuevo estado
+      // podemos mutar el estado directamente, y tampoco hace falta devolverlo. Esto es porque usa internamente immer.js, que se encarga de crear un nuevo estado inmutable por nosotros
+      // Es decir, podríamos hacer:
+      // state.push({ id, ...action.payload })
+      // Esto es una ventaja, pero a la vez puede llevar a confusión, porque no es el comportamiento "normal" de redux, y tenemos una dependencia extra (immer.js). A pesar de esto, es más óptimo que structuredClone
+      // Esto nos evita hacer reducer complejos con muchos spread operators.
       return [ ...state, { id, ...action.payload } ]
     },
     deleteUserById: (state, action: PayloadAction<UserId>) => {
