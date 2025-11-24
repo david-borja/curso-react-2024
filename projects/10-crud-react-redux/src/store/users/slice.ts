@@ -50,6 +50,12 @@ export const usersSlice = createSlice({
     deleteUserById: (state, action: PayloadAction<UserId>) => {
       const id = action.payload
       return state.filter((user) => user.id !== id)
+    },
+    rollbackDeletedUser: (state, action: PayloadAction<UserWithId>) => {
+      const isUserDefined = state.some(user => user.id === action.payload.id)
+      if (!isUserDefined) {
+        return [ ...state, action.payload ]
+      }
     }
   }
 })
@@ -58,4 +64,4 @@ export default usersSlice.reducer
 // Redux toolkit nos permite exportar las acciones de esta manera
 // Y por tanto, prescindir de las strings de los tipos de acción
 // De esta manera, tenemos menos boilerplate y menos margen de error
-export const { deleteUserById, addNewUser } = usersSlice.actions
+export const { deleteUserById, addNewUser, rollbackDeletedUser } = usersSlice.actions
