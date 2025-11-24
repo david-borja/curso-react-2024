@@ -1,4 +1,4 @@
-import { deleteUserById, type UserId } from '../store/users/slice'
+import { addNewUser, deleteUserById, type User, type UserId } from '../store/users/slice'
 import { useAppDispatch } from './store'
 
 // este hook está bien tenerlo separado de la carpeta store, porque el día de mañana puede que no se utilice una store
@@ -11,9 +11,13 @@ import { useAppDispatch } from './store'
 export function useUserActions() {
   const dispatch = useAppDispatch()
 
+  const addUser = ({ name, email, github }: User) => {
+    dispatch(addNewUser({ name, email, github }))
+  }
+
   const removeUser = (id: UserId) => {
     dispatch(deleteUserById(id))
   }
 
-  return { removeUser }
+  return { removeUser, addUser }
 }

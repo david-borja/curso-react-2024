@@ -9,6 +9,9 @@ const persistanceLocalStorageMiddleware = (store) => (next) => (action) => {
   console.log(store.getState())
 }
 
+// Para llamar a una api, en lugar de usar redux-thunk, usaremos mejor react-query.
+// Hay que intentar no meter las llamadas a las apis dentro de los reducers
+
 export const store = configureStore({
   reducer: {
     users: usersReducer
