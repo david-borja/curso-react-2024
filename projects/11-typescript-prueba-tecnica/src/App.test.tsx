@@ -38,6 +38,10 @@ afterEach(() => {
 afterAll(() => server.close())
 beforeEach(() => render(<App />))
 
+// Ojo con el queryByText, ya que es un matcher que si no encuentra el elemento no lanza error, devuelve null. En cambio getByText lanza error si no encuentra el elemento. Y para los asíncronos está el findByText, que cuando no encuentra el elemento espera un tiempo a que aparezca antes de lanzar el error. 
+
+// En otras palabras, las comprobaciones toBeTruthy o toBeNull deben hacerse con queryByText, no con getByText. No hace falta comprobar si getByText devuelve algo, porque si no lo encuentra ya lanza error. Y con findByText igual, si no lo encuentra en el tiempo de espera lanza error.
+
 describe('App', () => {
   test('renders the component with initial users', async () => {
     expect(screen.getByText('Prueba técnica'))
@@ -69,6 +73,7 @@ describe('App', () => {
 
     expect(rows[1].textContent).toMatch(/Spain/i)
     expect(rows[1].textContent).toMatch(/John/i)
+    screen.getByText('No ordenar por país')
 
     fireEvent.click(button)
 
@@ -80,6 +85,7 @@ describe('App', () => {
 
     expect(rowsAsInitial[1].textContent).toMatch(/France/i)
     expect(rowsAsInitial[1].textContent).toMatch(/JaneSmith/i)
+    screen.getByText('Ordenar por país')
   })
 
   test('no sorting when typing a country to filter by', async () => {
@@ -93,6 +99,15 @@ describe('App', () => {
     await user.type(input, 'France')
     // fireEvent.change(input, { target: { value: 'France' } })
     expect(spyedSortUsers).toHaveBeenCalledTimes(1) // Only called once when clicking the sort button
+  })
+
+  test('deletes user row from the list', async () => {
+    const johnRow = await screen.findByRole('row', { name: /John Doe Spain/i })
+    expect(johnRow).toBeTruthy()
+    const deleteButton = within(johnRow).getByRole('button', { name: /Borrar/i })
+    fireEvent.click(deleteButton)
+
+    expect(screen.queryByRole('row', { name: /John Doe Spain/i })).toBeNull()
   })
 
   test('resets users to the original list', async () => {

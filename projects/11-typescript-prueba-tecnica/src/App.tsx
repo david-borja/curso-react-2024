@@ -1,7 +1,7 @@
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import './App.css'
-import type { User } from './types'
+import { SortBy, type User } from './types.d'
 import { UsersTable } from './components/UsersTable'
 // import mockUsersResponse from './mockUsersResponse.json'
 import { sortUsers } from './utils/sortUsers'
@@ -9,7 +9,7 @@ import { sortUsers } from './utils/sortUsers'
 function App() {
   const [users, setUsers] = useState<User[]>([])
   const [showColors, setShowColors] = useState<boolean>(false)
-  const [sortByCountry, setSortByCountry] = useState<boolean>(false)
+  const [sortBy, setSortBy] = useState<SortBy>(SortBy.NONE)
   const [filterCountry, setFilterCountry] = useState<string | null>(null)
 
   const originalUsersRef = useRef<User[]>([])
@@ -20,7 +20,8 @@ function App() {
   }
 
   const toggleSortByCountry = () => {
-    setSortByCountry(!sortByCountry)
+    const newSortingValue = sortBy === SortBy.NONE ? SortBy.COUNTRY : SortBy.NONE
+    setSortBy(newSortingValue)
   }
 
   const handleDelete = (id: string) => {
@@ -30,6 +31,10 @@ function App() {
 
   const handleReset = () => {
     setUsers(originalUsersRef.current)
+  }
+
+  const handleChangeSort = (sort: SortBy) => {
+    setSortBy(sort)
   }
 
   useEffect(() => {
@@ -47,18 +52,22 @@ function App() {
       })
   }, [])
 
-  const getSortedUsers = ((users: User[]) => {
-    if (!sortByCountry) return users
-    if (sortedUsersRef.current.length) return sortedUsersRef.current
-    sortedUsersRef.current = sortUsers(users)
-    return sortedUsersRef.current
-  })
+  const getSortedUsers = useCallback(((users: User[]) => {
+    if (sortBy === SortBy.NONE) return users
 
-  const getFilteredUsers = ((users: User[]) => {
+    // return sortUsers(users, sorting)
+
+
+    if (sortedUsersRef.current.length) return sortedUsersRef.current
+    sortedUsersRef.current = sortUsers(users, sortBy)
+    return sortedUsersRef.current
+  }), [sortBy])
+
+  const getFilteredUsers = useCallback(((users: User[]) => {
     if (!filterCountry) return users
     return users
       .filter(user => user.location.country.toLowerCase().includes(filterCountry.toLowerCase()))
-  })
+  }), [filterCountry])
 
   const filteredUsers = useMemo(() => {
     console.log('Filtering users')
@@ -68,7 +77,7 @@ function App() {
   const sortedUsers = useMemo(() => {
     console.log('Getting sorted users')
     return getSortedUsers(filteredUsers)
-  }, [filteredUsers, sortByCountry])
+  }, [filteredUsers, sortBy])
 
   return (
     <div className='App'>
@@ -78,7 +87,7 @@ function App() {
           {showColors ? 'No colorear filas' : 'Colorear filas'}
         </button>
         <button onClick={toggleSortByCountry}>
-          {sortByCountry ? 'No ordenar por país' : 'Ordenar por país'}
+          {sortBy === SortBy.COUNTRY ? 'No ordenar por país' : 'Ordenar por país'}
         </button>
         <button onClick={handleReset}>
           Resetear usuarios
@@ -86,7 +95,12 @@ function App() {
         <input placeholder='Filtra por país' onChange={(e) => { setFilterCountry(e.target.value) }} />
       </header>
       <main>
-        <UsersTable deleteUser={handleDelete} showColors={showColors} users={sortedUsers} />
+        <UsersTable
+          deleteUser={handleDelete}
+          showColors={showColors}
+          users={sortedUsers}
+          changeSorting={handleChangeSort}
+        />
       </main>
     </div>
   )

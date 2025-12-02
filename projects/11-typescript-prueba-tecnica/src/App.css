@@ -4,3 +4,23 @@
   text-align: center;
   width: 100%;
 }
+/* también se pueden poner los valores even y odd */
+.table-showColors tr:nth-child(2n) { /* tr:nth-child(even) */
+  background-color: #333;
+}
+
+.table-showColors tr:nth-child(2n + 1) { /* tr:nth-child(odd) */
+  background-color: #555;
+}
+
+header {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 48px;
+  justify-content: center;
+  align-items: center;
+}
+
+.pointer {
+  cursor: pointer;
+}
