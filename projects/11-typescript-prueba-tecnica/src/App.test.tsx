@@ -18,6 +18,24 @@ const MOCK_USERS = [
     location: { country: 'France' },
     name: { first: 'Jane', last: 'Smith' },
     email: 'jane.smith@example.com'
+  },
+  {
+    login: { uuid: '3' },
+    location: { country: 'Germany' },
+    name: { first: 'Alice', last: 'Brown' },
+    email: 'alice.brown@example.com'
+  },
+  {
+    login: { uuid: '4' },
+    location: { country: 'Italy' },
+    name: { first: 'Bob', last: 'White' },
+    email: 'bob.white@example.com'
+  },
+  {
+    login: { uuid: '5' },
+    location: { country: 'USA' },
+    name: { first: 'Charlie', last: 'Green' },
+    email: 'charlie.green@example.com'
   }
 ]
 
@@ -42,7 +60,7 @@ beforeEach(() => render(<App />))
 
 // En otras palabras, las comprobaciones toBeTruthy o toBeNull deben hacerse con queryByText, no con getByText. No hace falta comprobar si getByText devuelve algo, porque si no lo encuentra ya lanza error. Y con findByText igual, si no lo encuentra en el tiempo de espera lanza error.
 
-describe('App', () => {
+describe('App functionalities', () => {
   test('renders the component with initial users', async () => {
     expect(screen.getByText('Prueba técnica'))
     expect(await screen.findByText('John'))
@@ -60,7 +78,8 @@ describe('App', () => {
     })
   })
 
-  test('sorts users by country', async () => {
+  test('sorts users', async () => {
+    // By Country
     const button = screen.getByText('Ordenar por país')
     expect(await screen.findByText('John'))
 
@@ -69,10 +88,11 @@ describe('App', () => {
     const tbody = screen.getAllByRole('rowgroup')[1]
     const rows = within(tbody).getAllByRole('row')
     expect(rows[0].textContent).toMatch(/France/i)
-    expect(rows[0].textContent).toMatch(/JaneSmith/i)
+    expect(rows[1].textContent).toMatch(/Germany/i)
+    expect(rows[2].textContent).toMatch(/Italy/i)
+    expect(rows[3].textContent).toMatch(/Spain/i)
+    expect(rows[4].textContent).toMatch(/USA/i)
 
-    expect(rows[1].textContent).toMatch(/Spain/i)
-    expect(rows[1].textContent).toMatch(/John/i)
     screen.getByText('No ordenar por país')
 
     fireEvent.click(button)
@@ -81,11 +101,30 @@ describe('App', () => {
     const rowsAsInitial = within(tbodyAsInitial).getAllByRole('row')
 
     expect(rowsAsInitial[0].textContent).toMatch(/Spain/i)
-    expect(rowsAsInitial[0].textContent).toMatch(/John/i)
-
     expect(rowsAsInitial[1].textContent).toMatch(/France/i)
-    expect(rowsAsInitial[1].textContent).toMatch(/JaneSmith/i)
     screen.getByText('Ordenar por país')
+
+    // By Name
+    const clickableHeader = screen.getByText('Nombre')
+
+    fireEvent.click(clickableHeader)
+
+    const tbodyName = screen.getAllByRole('rowgroup')[1]
+    const rowsName = within(tbodyName).getAllByRole('row')
+    expect(rowsName[0].textContent).toMatch(/Alice/i)
+    expect(rowsName[1].textContent).toMatch(/Bob/i)
+    expect(rowsName[2].textContent).toMatch(/Charlie/i)
+    expect(rowsName[3].textContent).toMatch(/Jane/i)
+    expect(rowsName[4].textContent).toMatch(/John/i)
+
+    fireEvent.click(clickableHeader)
+    const tbodyNameAgain = screen.getAllByRole('rowgroup')[1]
+    const rowsNameAgain = within(tbodyNameAgain).getAllByRole('row')
+    expect(rowsNameAgain[0].textContent).toMatch(/John/i)
+    expect(rowsNameAgain[1].textContent).toMatch(/Jane/i)
+    expect(rowsNameAgain[2].textContent).toMatch(/Alice/i)
+    expect(rowsNameAgain[3].textContent).toMatch(/Bob/i)
+    expect(rowsNameAgain[4].textContent).toMatch(/Charlie/i)
   })
 
   test('no sorting when typing a country to filter by', async () => {
@@ -149,3 +188,53 @@ describe('App', () => {
     expect(spyedSortUsers).toHaveBeenCalledTimes(0)
   })
 })
+
+describe('App user stories', () => {
+  test('sorts by name, filters users by country and deletes filter', async () => {
+    expect(await screen.findByText('Jane'))
+    const clickableHeader = screen.getByText('Nombre')
+    fireEvent.click(clickableHeader)
+
+    const user = userEvent.setup()
+    const input = screen.getByPlaceholderText('Filtra por país')
+    await user.type(input, 'Spain')
+
+    expect(await screen.findByText('John'))
+    await waitFor(() => {
+      expect(screen.queryByText('Jane')).toBeNull()
+    })
+
+    user.clear(input)
+    expect(await screen.findByText('Jane'))
+  })
+
+  test('sorts by name, filters users by country and deletes user', async () => {
+    expect(await screen.findByText('Jane'))
+    const clickableHeader = screen.getByText('Nombre')
+    fireEvent.click(clickableHeader)
+
+    const user = userEvent.setup()
+    const input = screen.getByPlaceholderText('Filtra por país')
+    await user.type(input, 'S')
+
+    expect(await screen.findByText('John'))
+    expect(await screen.findByText('Charlie'))
+    await waitFor(() => {
+      expect(screen.queryByText('Jane')).toBeNull()
+    })
+
+    const johnRow = await screen.findByRole('row', { name: /John Doe Spain/i })
+    expect(johnRow).toBeTruthy()
+    const deleteButton = within(johnRow).getByRole('button', { name: /Borrar/i })
+    fireEvent.click(deleteButton)
+
+    expect(screen.queryByRole('row', { name: /John Doe Spain/i })).toBeNull()
+  })
+})
+
+// falla restaurar los usuarios cuando se va borrando la query cuando la lista está ordenada
+// en este caso, tampoco se puede resetear
+// no se puede borrar cuando la lista está ordenada
+// falta testear que no se ordena cuando se borra un usuario
+// guardar usuarios borrados en una ref. 
+// testear que cuando se filtra y se borra un usuario, al quitar el filtro el usuario borrado no reaparece. Y tampoco si se cambia la ordenación.

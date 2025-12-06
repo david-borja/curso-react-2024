@@ -1,5 +1,5 @@
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './App.css'
 import { SortBy, type User } from './types.d'
 import { UsersTable } from './components/UsersTable'
@@ -14,6 +14,7 @@ function App() {
 
   const originalUsersRef = useRef<User[]>([])
   const sortedUsersRef = useRef<User[]>([])
+  const sortByRef = useRef<SortBy>(SortBy.NONE)
 
   const toggleShowColors = () => {
     setShowColors(!showColors)
@@ -24,7 +25,7 @@ function App() {
     setSortBy(newSortingValue)
   }
 
-  const handleDelete = (id: string) => {
+  const handleDelete = (id: string, users: User[]) => {
     const filteredUsers = users.filter(user => user.login.uuid !== id)
     setUsers(filteredUsers)
   }
@@ -52,32 +53,73 @@ function App() {
       })
   }, [])
 
-  const getSortedUsers = useCallback(((users: User[]) => {
-    if (sortBy === SortBy.NONE) return users
+  const getFilteredUsers = (users: User[], filterCountry: string) => {
+    return users.filter(user => user.location.country.toLowerCase().includes(filterCountry.toLowerCase()))
+  }
 
-    // return sortUsers(users, sorting)
+  const getSortedUsers = (users: User[], sortBy: SortBy) => {
+    return sortUsers(users, sortBy)
+  }
 
+  useEffect(() => {
+    const originalUsers = Array.from(originalUsersRef.current)
+    const sortedUsers = Array.from(sortedUsersRef.current)
+    // Si no hay filtro, volvemos al original o a los ordenados
+    if (!filterCountry) {
+      setUsers(sortBy === SortBy.NONE ? originalUsers : sortedUsers)
+    }
 
-    if (sortedUsersRef.current.length) return sortedUsersRef.current
-    sortedUsersRef.current = sortUsers(users, sortBy)
-    return sortedUsersRef.current
-  }), [sortBy])
+    // Aplicamos el filtro sobre los usuarios originales o los ordenados
+    const usersToFilter = sortBy === SortBy.NONE ? originalUsers : sortedUsers
+    const filteredUsers = getFilteredUsers(usersToFilter, filterCountry || '')
+    setUsers(filteredUsers)
+  }, [filterCountry])
 
-  const getFilteredUsers = useCallback(((users: User[]) => {
-    if (!filterCountry) return users
-    return users
-      .filter(user => user.location.country.toLowerCase().includes(filterCountry.toLowerCase()))
-  }), [filterCountry])
+  useEffect(() => {
+    // Si no hay ordenación, volvemos al original (posiblemente filtrado) 
+    if (sortBy === SortBy.NONE) {
+      const newUsers = Array.from(originalUsersRef.current)
+      setUsers(filterCountry ? getFilteredUsers(newUsers, filterCountry) : newUsers)
+      return
+    }
 
-  const filteredUsers = useMemo(() => {
-    console.log('Filtering users')
-    return getFilteredUsers(users)
-  }, [users, filterCountry])
+    // Si la ordenación es la misma que la anterior y ya tenemos usuarios ordenados, los reutilizamos
+    if (sortByRef.current === sortBy && sortedUsersRef.current.length) {
+      const newUsers = Array.from(sortedUsersRef.current)
+      setUsers(filterCountry ? getFilteredUsers(newUsers, filterCountry) : newUsers)
+      return
+    }
 
-  const sortedUsers = useMemo(() => {
-    console.log('Getting sorted users')
-    return getSortedUsers(filteredUsers)
-  }, [filteredUsers, sortBy])
+    // Ordenamos los usuarios originales y guardamos el resultado
+    const sortedUsers = getSortedUsers(Array.from(originalUsersRef.current), sortBy)
+    sortedUsersRef.current = Array.from(sortedUsers)
+    setUsers(filterCountry ? getFilteredUsers(sortedUsers, filterCountry) : sortedUsers)
+  }, [sortBy])
+
+  // Así estaba antes, pero ya no escalaba:
+  // const getSortedUsers = useCallback(((users: User[]) => {
+  //   if (sortBy === SortBy.NONE) return users
+  //   // return sortUsers(users, sorting)
+  //   if (sortedUsersRef.current.length) return sortedUsersRef.current
+  //   sortedUsersRef.current = sortUsers(users, sortBy)
+  //   return sortedUsersRef.current
+  // }), [sortBy])
+
+  // const getFilteredUsers = useCallback(((users: User[]) => {
+  //   if (!filterCountry) return users
+  //   return users
+  //     .filter(user => user.location.country.toLowerCase().includes(filterCountry.toLowerCase()))
+  // }), [filterCountry])
+
+  // const filteredUsers = useMemo(() => {
+  //   console.log('Filtering users')
+  //   return getFilteredUsers(users)
+  // }, [users, filterCountry])
+
+  // const sortedUsers = useMemo(() => {
+  //   console.log('Getting sorted users')
+  //   return getSortedUsers(filteredUsers)
+  // }, [filteredUsers, sortBy])
 
   return (
     <div className='App'>
@@ -98,8 +140,9 @@ function App() {
         <UsersTable
           deleteUser={handleDelete}
           showColors={showColors}
-          users={sortedUsers}
+          users={users}
           changeSorting={handleChangeSort}
+          sortBy={sortBy}
         />
       </main>
     </div>

@@ -1,5 +1,6 @@
 import { SortBy, type User } from '../types.d'
 
+// Record es una forma de tipar objetos con claves específicas
 const compareProperties: Record<string, (user: User) => string> = {
   [SortBy.COUNTRY]: user => user.location.country,
   [SortBy.NAME]: user => user.name.first,
