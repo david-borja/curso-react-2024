@@ -62,8 +62,8 @@ export function useUsers() {
   }
 
   useEffect(() => {
-    const originalUsers = Array.from(originalUsersRef.current)
-    const sortedUsers = Array.from(sortedUsersRef.current)
+    const originalUsers = originalUsersRef.current
+    const sortedUsers = sortedUsersRef.current
     // Si no hay filtro, volvemos al original o a los ordenados
     if (!filterCountry) {
       const users = sortBy === SortBy.NONE ? originalUsers : sortedUsers
@@ -81,7 +81,7 @@ export function useUsers() {
   useEffect(() => {
     // Si no hay ordenación, volvemos al original (posiblemente filtrado) 
     if (sortBy === SortBy.NONE) {
-      const newUsers = Array.from(originalUsersRef.current)
+      const newUsers = originalUsersRef.current
       const users = filterCountry ? getFilteredUsers(newUsers, filterCountry) : newUsers
       const sanitizedUsers = sanitizeDeletedUsers(users)
       setUsers(sanitizedUsers)
@@ -90,7 +90,7 @@ export function useUsers() {
 
     // Si la ordenación es la misma que la anterior y ya tenemos usuarios ordenados, los reutilizamos
     if (sortByRef.current === sortBy && sortedUsersRef.current.length) {
-      const newUsers = Array.from(sortedUsersRef.current)
+      const newUsers = sortedUsersRef.current
       const users = filterCountry ? getFilteredUsers(newUsers, filterCountry) : newUsers
       const sanitizedUsers = sanitizeDeletedUsers(users)
       setUsers(sanitizedUsers)
@@ -98,8 +98,8 @@ export function useUsers() {
     }
 
     // Ordenamos los usuarios originales y guardamos el resultado
-    const sortedUsers = getSortedUsers(Array.from(originalUsersRef.current), sortBy)
-    sortedUsersRef.current = Array.from(sortedUsers)
+    const sortedUsers = getSortedUsers(originalUsersRef.current, sortBy)
+    sortedUsersRef.current = sortedUsers
     const users = filterCountry ? getFilteredUsers(sortedUsers, filterCountry) : sortedUsers
     const sanitizedUsers = sanitizeDeletedUsers(users)
     setUsers(sanitizedUsers)
