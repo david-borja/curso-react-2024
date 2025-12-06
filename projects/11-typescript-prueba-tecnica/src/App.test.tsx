@@ -235,10 +235,3 @@ describe('App user stories', () => {
     expect(screen.queryByRole('row', { name: /John Doe Spain/i })).toBeNull()
   })
 })
-
-// falla restaurar los usuarios cuando se va borrando la query cuando la lista está ordenada
-// en este caso, tampoco se puede resetear
-// no se puede borrar cuando la lista está ordenada
-// falta testear que no se ordena cuando se borra un usuario
-// guardar usuarios borrados en una ref. 
-// testear que cuando se filtra y se borra un usuario, al quitar el filtro el usuario borrado no reaparece. Y tampoco si se cambia la ordenación.
