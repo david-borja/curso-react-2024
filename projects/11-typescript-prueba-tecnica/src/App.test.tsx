@@ -208,7 +208,7 @@ describe('App user stories', () => {
     expect(await screen.findByText('Jane'))
   })
 
-  test('sorts by name, filters users by country and deletes user', async () => {
+  test('sorts by name, filters users by country, deletes user, filters again and reverts sort', async () => {
     expect(await screen.findByText('Jane'))
     const clickableHeader = screen.getByText('Nombre')
     fireEvent.click(clickableHeader)
@@ -228,6 +228,10 @@ describe('App user stories', () => {
     const deleteButton = within(johnRow).getByRole('button', { name: /Borrar/i })
     fireEvent.click(deleteButton)
 
+    expect(screen.queryByRole('row', { name: /John Doe Spain/i })).toBeNull()
+    await user.type(input, 'pain')
+    expect(screen.queryByRole('row', { name: /John Doe Spain/i })).toBeNull()
+    fireEvent.click(clickableHeader)
     expect(screen.queryByRole('row', { name: /John Doe Spain/i })).toBeNull()
   })
 })
