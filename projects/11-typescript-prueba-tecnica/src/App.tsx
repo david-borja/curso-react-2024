@@ -8,11 +8,11 @@ import { useUsers } from './hooks/useUsers'
 
 function App() {
   const { showColors, toggleShowColors } = useRowColors()
-  const { users, loading, error, sorting, filtering, handlers } = useUsers()
+  const { users, currentPage, loading, error, sorting, filtering, handlers } = useUsers()
 
   const { sortBy, toggleSortByCountry, changeSort } = sorting
   const { filterByCountry } = filtering
-  const { handleDelete, handleReset } = handlers
+  const { handleDelete, handleReset, handleChangePage } = handlers
 
   return (
     <div className='App'>
@@ -30,9 +30,7 @@ function App() {
         <input placeholder='Filtra por país' onChange={filterByCountry} />
       </header>
       <main>
-        {loading && <p>Cargando...</p>}
-        {!loading && error && <p>Ha habido un error</p>}
-        {!loading && !error && users.length > 0 && (
+        {users.length > 0 && (
           <UsersTable
             deleteUser={handleDelete}
             showColors={showColors}
@@ -41,6 +39,10 @@ function App() {
             sortBy={sortBy}
           />
         )}
+        {loading && <p>Cargando...</p>}
+        {error && <p>Ha habido un error</p>}
+        {!loading && !error && users.length === 0 && <p>No hay usuarios</p>}
+        {!loading && !error && (<button onClick={() => handleChangePage(currentPage + 1)}>Cargar más resultados</button>)}
       </main>
     </div>
   )

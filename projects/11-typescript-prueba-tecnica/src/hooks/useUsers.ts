@@ -3,10 +3,13 @@ import { SortBy, type User, type UUID } from '../types.d'
 import { sortUsers } from '../utils/sortUsers'
 import { getUsers } from '../services/users'
 
+// se podría hacer con infinity scroll, usando algo como: https://usehooks-ts.com/react-hook/use-intersection-observer
+
 export function useUsers() {
   const [users, setUsers] = useState<User[]>([])
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
+  const [currentPage, setCurrentPage] = useState<number>(1)
   const [sortBy, setSortBy] = useState<SortBy>(SortBy.NONE)
   const [filterCountry, setFilterCountry] = useState<string | null>(null)
 
@@ -32,6 +35,10 @@ export function useUsers() {
     setSortBy(sort)
   }
 
+  const handleChangePage = (newPage: number) => {
+    setCurrentPage(newPage)
+  }
+
   const sanitizeDeletedUsers = (users: User[]) => {
     return users.filter(user => !deletedUsersRef.current.includes(user.login.uuid))
   }
@@ -46,15 +53,18 @@ export function useUsers() {
     // originalUsers.current = mockUsersResponse.results as User[]
     setLoading(true)
     setError(null)
-    getUsers().then((response) => {
+    getUsers({ page: currentPage }).then((response) => {
       if (Object.prototype.hasOwnProperty.call(response, 'error')) {
         if ('error' in response && typeof response.error === 'string') {
           setError(response.error)
         }
         return
       }
-      setUsers(response)
-      originalUsersRef.current = response
+      setUsers(prevUsers => {
+        const newUsers = prevUsers.concat(response.results)
+        originalUsersRef.current = newUsers
+        return newUsers
+      })
     }).finally(() => {
       setLoading(false)
     })
@@ -63,7 +73,7 @@ export function useUsers() {
     //   setUsers(fetchedUsers)
     //   originalUsersRef.current = fetchedUsers
     // })()
-  }, [])
+  }, [currentPage])
 
   const getFilteredUsers = (users: User[], filterCountry: string) => {
     return users.filter(user => user.location.country.toLowerCase().includes(filterCountry.toLowerCase()))
@@ -146,6 +156,7 @@ export function useUsers() {
     users,
     error,
     loading,
+    currentPage,
     sorting: {
       sortBy,
       toggleSortByCountry,
@@ -156,8 +167,8 @@ export function useUsers() {
     },
     handlers: {
       handleDelete,
-      handleReset
+      handleReset,
+      handleChangePage
     }
-    
   }
 }
