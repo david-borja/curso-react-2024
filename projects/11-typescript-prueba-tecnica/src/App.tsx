@@ -8,7 +8,7 @@ import { useUsers } from './hooks/useUsers'
 
 function App() {
   const { showColors, toggleShowColors } = useRowColors()
-  const { users, sorting, filtering, handlers } = useUsers()
+  const { users, loading, error, sorting, filtering, handlers } = useUsers()
 
   const { sortBy, toggleSortByCountry, changeSort } = sorting
   const { filterByCountry } = filtering
@@ -30,13 +30,17 @@ function App() {
         <input placeholder='Filtra por país' onChange={filterByCountry} />
       </header>
       <main>
-        <UsersTable
-          deleteUser={handleDelete}
-          showColors={showColors}
-          users={users}
-          changeSorting={changeSort}
-          sortBy={sortBy}
-        />
+        {loading && <p>Cargando...</p>}
+        {!loading && error && <p>Ha habido un error</p>}
+        {!loading && !error && users.length > 0 && (
+          <UsersTable
+            deleteUser={handleDelete}
+            showColors={showColors}
+            users={users}
+            changeSorting={changeSort}
+            sortBy={sortBy}
+          />
+        )}
       </main>
     </div>
   )

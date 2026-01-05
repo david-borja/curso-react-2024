@@ -6,7 +6,7 @@ export async function getUsers() {
     })
     .then(data => data.results)
     .catch(err => {
-      console.error('Users call error', err)
+      return { error: err.message }
       // setUsers(mockUsersResponse.results as User[])
     })
 }

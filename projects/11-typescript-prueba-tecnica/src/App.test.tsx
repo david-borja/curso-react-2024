@@ -61,6 +61,17 @@ beforeEach(() => render(<App />))
 // En otras palabras, las comprobaciones toBeTruthy o toBeNull deben hacerse con queryByText, no con getByText. No hace falta comprobar si getByText devuelve algo, porque si no lo encuentra ya lanza error. Y con findByText igual, si no lo encuentra en el tiempo de espera lanza error.
 
 describe('App functionalities', () => {
+  test('shows error message if API fails', async () => {
+    cleanup()
+    server.use(
+      http.get('https://randomuser.me/api/', () => {
+        return new HttpResponse(null, { status: 500 })
+      })
+    )
+    render(<App />)
+    expect(await screen.findByText(/error/i))
+  })
+
   test('renders the component with initial users', async () => {
     expect(screen.getByText('Prueba técnica'))
     expect(await screen.findByText('John'))

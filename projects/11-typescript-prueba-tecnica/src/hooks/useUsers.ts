@@ -5,6 +5,8 @@ import { getUsers } from '../services/users'
 
 export function useUsers() {
   const [users, setUsers] = useState<User[]>([])
+  const [loading, setLoading] = useState<boolean>(false)
+  const [error, setError] = useState<string | null>(null)
   const [sortBy, setSortBy] = useState<SortBy>(SortBy.NONE)
   const [filterCountry, setFilterCountry] = useState<string | null>(null)
 
@@ -42,9 +44,19 @@ export function useUsers() {
   useEffect(() => {
     // setUsers(mockUsersResponse.results as User[])
     // originalUsers.current = mockUsersResponse.results as User[]
-    getUsers().then((fetchedUsers) => {
-      setUsers(fetchedUsers)
-      originalUsersRef.current = fetchedUsers
+    setLoading(true)
+    setError(null)
+    getUsers().then((response) => {
+      if (Object.prototype.hasOwnProperty.call(response, 'error')) {
+        if ('error' in response && typeof response.error === 'string') {
+          setError(response.error)
+        }
+        return
+      }
+      setUsers(response)
+      originalUsersRef.current = response
+    }).finally(() => {
+      setLoading(false)
     })
     // (async () => {
     //   const fetchedUsers = await getUsers()
@@ -132,6 +144,8 @@ export function useUsers() {
 
   return {
     users,
+    error,
+    loading,
     sorting: {
       sortBy,
       toggleSortByCountry,
