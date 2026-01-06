@@ -1,4 +1,3 @@
-
 import './App.css'
 import { SortBy } from './types.d'
 import { UsersTable } from './components/UsersTable'
