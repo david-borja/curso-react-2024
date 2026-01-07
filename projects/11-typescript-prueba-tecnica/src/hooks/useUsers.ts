@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { SortBy, type User, type UUID } from '../types.d'
 import { sortUsers } from '../utils/sortUsers'
 import { getUsers } from '../services/users'
@@ -6,9 +7,6 @@ import { getUsers } from '../services/users'
 // se podría hacer con infinity scroll, usando algo como: https://usehooks-ts.com/react-hook/use-intersection-observer
 
 export function useUsers() {
-  const [users, setUsers] = useState<User[]>([])
-  const [loading, setLoading] = useState<boolean>(false)
-  const [error, setError] = useState<string | null>(null)
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [sortBy, setSortBy] = useState<SortBy>(SortBy.NONE)
   const [filterCountry, setFilterCountry] = useState<string | null>(null)
@@ -17,6 +15,35 @@ export function useUsers() {
   const sortedUsersRef = useRef<User[]>([])
   const sortByRef = useRef<SortBy>(SortBy.NONE)
   const deletedUsersRef = useRef<UUID[]>([])
+
+  const [users, setUsers] = useState<User[]>([])
+
+  // Use useQuery for data fetching
+  const { data, error, isLoading } = useQuery({
+    queryKey: ['users', currentPage],
+    queryFn: async () => {
+      const response = await getUsers({ page: currentPage })
+      if (Object.prototype.hasOwnProperty.call(response, 'error')) {
+        if ('error' in response && typeof response.error === 'string') {
+          throw new Error(response.error)
+        }
+      }
+      return response
+    },
+    retry: false,
+    refetchOnWindowFocus: false
+  })
+
+  // Handle data updates when query succeeds
+  useEffect(() => {
+    if (data?.results) {
+      setUsers(prevUsers => {
+        const newUsers = prevUsers.concat(data.results)
+        originalUsersRef.current = newUsers
+        return newUsers
+      })
+    }
+  }, [data])
 
   const filterByCountry = (e: React.ChangeEvent<HTMLInputElement>) => setFilterCountry(e.target.value)
 
@@ -47,33 +74,6 @@ export function useUsers() {
     const newSortingValue = sortBy === SortBy.NONE ? SortBy.COUNTRY : SortBy.NONE
     setSortBy(newSortingValue)
   }
-
-  useEffect(() => {
-    // setUsers(mockUsersResponse.results as User[])
-    // originalUsers.current = mockUsersResponse.results as User[]
-    setLoading(true)
-    setError(null)
-    getUsers({ page: currentPage }).then((response) => {
-      if (Object.prototype.hasOwnProperty.call(response, 'error')) {
-        if ('error' in response && typeof response.error === 'string') {
-          setError(response.error)
-        }
-        return
-      }
-      setUsers(prevUsers => {
-        const newUsers = prevUsers.concat(response.results)
-        originalUsersRef.current = newUsers
-        return newUsers
-      })
-    }).finally(() => {
-      setLoading(false)
-    })
-    // (async () => {
-    //   const fetchedUsers = await getUsers()
-    //   setUsers(fetchedUsers)
-    //   originalUsersRef.current = fetchedUsers
-    // })()
-  }, [currentPage])
 
   const getFilteredUsers = (users: User[], filterCountry: string) => {
     return users.filter(user => user.location.country.toLowerCase().includes(filterCountry.toLowerCase()))
@@ -127,35 +127,10 @@ export function useUsers() {
     setUsers(sanitizedUsers)
   }, [sortBy])
 
-  // Así estaba antes, pero ya no escalaba:
-  // const getSortedUsers = useCallback(((users: User[]) => {
-  //   if (sortBy === SortBy.NONE) return users
-  //   // return sortUsers(users, sorting)
-  //   if (sortedUsersRef.current.length) return sortedUsersRef.current
-  //   sortedUsersRef.current = sortUsers(users, sortBy)
-  //   return sortedUsersRef.current
-  // }), [sortBy])
-
-  // const getFilteredUsers = useCallback(((users: User[]) => {
-  //   if (!filterCountry) return users
-  //   return users
-  //     .filter(user => user.location.country.toLowerCase().includes(filterCountry.toLowerCase()))
-  // }), [filterCountry])
-
-  // const filteredUsers = useMemo(() => {
-  //   console.log('Filtering users')
-  //   return getFilteredUsers(users)
-  // }, [users, filterCountry])
-
-  // const sortedUsers = useMemo(() => {
-  //   console.log('Getting sorted users')
-  //   return getSortedUsers(filteredUsers)
-  // }, [filteredUsers, sortBy])
-
   return {
     users,
-    error,
-    loading,
+    error: error?.message || null,
+    loading: isLoading,
     currentPage,
     sorting: {
       sortBy,

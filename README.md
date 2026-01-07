@@ -14,3 +14,8 @@ If you are developing a production application, we recommend using TypeScript wi
 # Commands
 
 npm create vite@latest
+
+La gente cree que tanstack query es una biblioteca para hacer fetching de datos. Y no es eso.
+De hecho, podrías no hacer fetching de datos.
+Es una biblioteca para manejar estados asíncronos.
+Te quita mucho del estado de redux. Hace que (casi) no lo necesites

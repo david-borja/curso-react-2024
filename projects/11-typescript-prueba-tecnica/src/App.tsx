@@ -41,7 +41,12 @@ function App() {
         {loading && <p>Cargando...</p>}
         {error && <p>Ha habido un error</p>}
         {!loading && !error && users.length === 0 && <p>No hay usuarios</p>}
-        {!loading && !error && (<button onClick={() => handleChangePage(currentPage + 1)}>Cargar más resultados</button>)}
+        {!loading && !error && (
+          <button
+            onClick={() => handleChangePage(currentPage + 1)}
+          >Cargar más resultados
+          </button>
+        )}
       </main>
     </div>
   )

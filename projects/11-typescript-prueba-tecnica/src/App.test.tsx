@@ -5,6 +5,8 @@ import { http, HttpResponse } from 'msw'
 import { setupServer } from 'msw/node'
 import App from './App'
 import * as sortUsers from './utils/sortUsers'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import type { JSX } from 'react'
 
 const MOCK_USERS = [
   {
@@ -47,6 +49,16 @@ const server = setupServer(
   })
 )
 
+export function renderWithQueryClient(ui: JSX.Element) {
+  const queryClient = new QueryClient()
+
+  return render(
+    <QueryClientProvider client={queryClient}>
+      {ui}
+    </QueryClientProvider>
+  )
+}
+
 beforeAll(() => server.listen())
 afterEach(() => {
   cleanup()
@@ -54,7 +66,7 @@ afterEach(() => {
   vi.restoreAllMocks()
 })
 afterAll(() => server.close())
-beforeEach(() => render(<App />))
+beforeEach(() => renderWithQueryClient(<App />))
 
 // Ojo con el queryByText, ya que es un matcher que si no encuentra el elemento no lanza error, devuelve null. En cambio getByText lanza error si no encuentra el elemento. Y para los asíncronos está el findByText, que cuando no encuentra el elemento espera un tiempo a que aparezca antes de lanzar el error. 
 
@@ -68,7 +80,7 @@ describe('App functionalities', () => {
         return new HttpResponse(null, { status: 500 })
       })
     )
-    render(<App />)
+    renderWithQueryClient(<App />)
     expect(await screen.findByText(/error/i))
   })
 
