@@ -1,13 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useInfiniteQuery } from '@tanstack/react-query'
 import { SortBy, type User, type UUID } from '../types.d'
 import { sortUsers } from '../utils/sortUsers'
 import { getUsers } from '../services/users'
 
 // se podría hacer con infinity scroll, usando algo como: https://usehooks-ts.com/react-hook/use-intersection-observer
 
+interface UsersResponse {
+  users: User[]
+  nextCursor?: number
+}
+
 export function useUsers() {
-  const [currentPage, setCurrentPage] = useState<number>(1)
   const [sortBy, setSortBy] = useState<SortBy>(SortBy.NONE)
   const [filterCountry, setFilterCountry] = useState<string | null>(null)
 
@@ -19,29 +23,36 @@ export function useUsers() {
   const [users, setUsers] = useState<User[]>([])
 
   // Use useQuery for data fetching
-  const { data, error, isLoading } = useQuery({
-    queryKey: ['users', currentPage],
-    queryFn: async () => {
-      const response = await getUsers({ page: currentPage })
-      if (Object.prototype.hasOwnProperty.call(response, 'error')) {
-        if ('error' in response && typeof response.error === 'string') {
-          throw new Error(response.error)
-        }
+  const fetchUsers = async ({ pageParam = 1 }: { pageParam?: number }) => {
+    const response = await getUsers({ page: pageParam })
+    if (Object.prototype.hasOwnProperty.call(response, 'error')) {
+      if ('error' in response && typeof response.error === 'string') {
+        throw new Error(response.error)
       }
-      return response
-    },
+    }
+    return response
+  }
+
+  const getNextPageParam = (lastPage: UsersResponse | { error: string }) => {
+    return 'nextCursor' in lastPage ? lastPage.nextCursor : undefined
+  }
+
+  const { data, error, fetchNextPage, isLoading } = useInfiniteQuery({
+    queryKey: ['users'],
+    queryFn: fetchUsers,
+    getNextPageParam,
+    initialPageParam: 1,
     retry: false,
     refetchOnWindowFocus: false
   })
 
   // Handle data updates when query succeeds
   useEffect(() => {
-    if (data?.results) {
-      setUsers(prevUsers => {
-        const newUsers = prevUsers.concat(data.results)
-        originalUsersRef.current = newUsers
-        return newUsers
-      })
+    if (data?.pages) {
+      const lastPage = data.pages.at(-1)
+      const lastPageUsers = (lastPage && 'users' in lastPage) ? lastPage.users : []
+      setUsers(prevUsers => prevUsers.concat(lastPageUsers))
+      if (data?.pageParams?.length === 1) originalUsersRef.current = lastPageUsers
     }
   }, [data])
 
@@ -62,8 +73,8 @@ export function useUsers() {
     setSortBy(sort)
   }
 
-  const handleChangePage = (newPage: number) => {
-    setCurrentPage(newPage)
+  const handleChangePage = () => {
+    fetchNextPage()
   }
 
   const sanitizeDeletedUsers = (users: User[]) => {
@@ -131,7 +142,6 @@ export function useUsers() {
     users,
     error: error?.message || null,
     loading: isLoading,
-    currentPage,
     sorting: {
       sortBy,
       toggleSortByCountry,

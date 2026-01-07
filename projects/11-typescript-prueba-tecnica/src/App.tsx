@@ -7,7 +7,7 @@ import { useUsers } from './hooks/useUsers'
 
 function App() {
   const { showColors, toggleShowColors } = useRowColors()
-  const { users, currentPage, loading, error, sorting, filtering, handlers } = useUsers()
+  const { users, loading, error, sorting, filtering, handlers } = useUsers()
 
   const { sortBy, toggleSortByCountry, changeSort } = sorting
   const { filterByCountry } = filtering
@@ -43,7 +43,7 @@ function App() {
         {!loading && !error && users.length === 0 && <p>No hay usuarios</p>}
         {!loading && !error && (
           <button
-            onClick={() => handleChangePage(currentPage + 1)}
+            onClick={handleChangePage}
           >Cargar más resultados
           </button>
         )}

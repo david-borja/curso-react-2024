@@ -44,7 +44,8 @@ const MOCK_USERS = [
 const server = setupServer(
   http.get('https://randomuser.me/api/', () => {
     return HttpResponse.json({
-      results: MOCK_USERS
+      results: MOCK_USERS,
+      info: { page: 1, results: 10, seed: 'prueba-tecnica' }
     })
   })
 )
