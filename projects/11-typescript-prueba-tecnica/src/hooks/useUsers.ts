@@ -43,7 +43,7 @@ export function useUsers() {
     getNextPageParam,
     initialPageParam: 1,
     retry: false,
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false //  aunque haga el refech, no se verá porque los datos ya están en caché y no muestra loading. Para ver esto, tendríamos que usar la propiedad isFetching. Podríamos mostrar una notificación como que está sincronizando los datos.
   })
 
   // Handle data updates when query succeeds

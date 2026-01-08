@@ -3,6 +3,7 @@ import { SortBy } from './types.d'
 import { UsersTable } from './components/UsersTable'
 import { useRowColors } from './hooks/useRowColors'
 import { useUsers } from './hooks/useUsers'
+import { Results } from './components/Results'
 // import mockUsersResponse from './mockUsersResponse.json'
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
   return (
     <div className='App'>
       <h1>Prueba técnica</h1>
+      <Results />
       <header>
         <button onClick={toggleShowColors}>
           {showColors ? 'No colorear filas' : 'Colorear filas'}
