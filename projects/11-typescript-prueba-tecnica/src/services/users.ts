@@ -1,4 +1,5 @@
 export async function getUsers({ page = 1 }: { page: number }) {
+  const MAX_PAGES = 3
   return fetch(`https://randomuser.me/api/?results=10&seed=prueba-tecnica&page=${page}`)
     .then((res) => {
       if (!res.ok) throw new Error(`Error fetching users: ${res.statusText}`)
@@ -6,7 +7,7 @@ export async function getUsers({ page = 1 }: { page: number }) {
     })
     .then(data => ({
       users: data.results,
-      nextCursor: data.info.page + 1
+      nextCursor: data.info.page > MAX_PAGES ? undefined : data.info.page + 1
     }))
     .catch(err => {
       // en axios, el error sí que lo capturamos aquí.

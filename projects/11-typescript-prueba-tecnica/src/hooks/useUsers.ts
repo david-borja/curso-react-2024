@@ -37,7 +37,7 @@ export function useUsers() {
     return 'nextCursor' in lastPage ? lastPage.nextCursor : undefined
   }
 
-  const { data, error, fetchNextPage, isLoading } = useInfiniteQuery({
+  const { data, error, fetchNextPage, hasNextPage, isLoading } = useInfiniteQuery({
     queryKey: ['users'],
     queryFn: fetchUsers,
     getNextPageParam,
@@ -142,6 +142,7 @@ export function useUsers() {
     users,
     error: error?.message || null,
     loading: isLoading,
+    hasNextPage,
     sorting: {
       sortBy,
       toggleSortByCountry,

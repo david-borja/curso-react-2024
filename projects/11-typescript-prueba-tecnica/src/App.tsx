@@ -7,7 +7,7 @@ import { useUsers } from './hooks/useUsers'
 
 function App() {
   const { showColors, toggleShowColors } = useRowColors()
-  const { users, loading, error, sorting, filtering, handlers } = useUsers()
+  const { users, loading, hasNextPage, error, sorting, filtering, handlers } = useUsers()
 
   const { sortBy, toggleSortByCountry, changeSort } = sorting
   const { filterByCountry } = filtering
@@ -41,11 +41,14 @@ function App() {
         {loading && <p>Cargando...</p>}
         {error && <p>Ha habido un error</p>}
         {!loading && !error && users.length === 0 && <p>No hay usuarios</p>}
-        {!loading && !error && (
+        {!loading && !error && hasNextPage && (
           <button
             onClick={handleChangePage}
           >Cargar más resultados
           </button>
+        )}
+        {!loading && !error && !hasNextPage && (
+          <p>No hay más resultados</p>
         )}
       </main>
     </div>
