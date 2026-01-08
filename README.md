@@ -90,3 +90,9 @@ Para instalar solo chromium (recomendado):
         '@typescript-eslint/consistent-type-definitions': ['error', 'interface']
       },
 - Para comprobar que todo funciona, vamos a App.tsx y guardamos para ver el auto formateo
+
+## Para agregar tailwind
+- pnpm i -E tailwindcss @tailwindcss/vite
+- Incorporar plugin en vite.config.ts
+- Poner esta línea en el index.css:
+    @import "tailwindcss";

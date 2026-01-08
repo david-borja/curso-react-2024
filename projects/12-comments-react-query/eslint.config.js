@@ -7,7 +7,7 @@ import { defineConfig } from "eslint/config";
 export default defineConfig([
   tseslint.configs.recommended,
   pluginReact.configs.flat.recommended,
-  { ignores: ['eslint.config.js'] },
+  { ignores: ['eslint.config.js', 'vite.config.ts'] },
   {
     files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"], plugins: { js }, extends: ["js/recommended"], languageOptions: { globals: globals.browser, parserOptions: { project: './tsconfig.app.json' } },
     rules: {
