@@ -1,14 +1,14 @@
 import type React from 'react'
-// import { useQuery } from '@tanstack/react-query'
-// import { getComments, type CommentWithId } from './service/comments'
+import { useQuery } from '@tanstack/react-query'
+import { getComments, type CommentWithId } from './services/comments'
 import { FormInput, FormTextArea } from './components/Form'
 import { Results } from './components/Results'
 
 function App() {
-  // const { data, isLoading, error } = useQuery<CommentWithId[]>(
-  //   ['comments'],
-  //   getComments
-  // )
+  const { data, isLoading, error } = useQuery<CommentWithId[]>({
+    queryKey: ['comments'],
+    queryFn: getComments
+  })
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -18,8 +18,8 @@ function App() {
     <main className='grid grid-cols-2 h-screen'>
       <div className='col-span-1 bg-white p-8'>
 
-        {/* {isLoading && <strong>Cargando...</strong>}
-        {error != null && <strong>Algo ha ido mal</strong>} */}
+        {isLoading && <strong>Cargando...</strong>}
+        {error != null && <strong>Algo ha ido mal</strong>}
         <Results data={[]} />
 
       </div>

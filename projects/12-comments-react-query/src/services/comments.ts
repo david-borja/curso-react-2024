@@ -8,11 +8,11 @@ export interface CommentWithId extends Comment {
 }
 
 export const getComments = async () => {
-  const response = await fetch('https://api.jsonbin.io/v3/b/643fbe2bc0e7653a05a77535', {
+  const response = await fetch(`https://api.jsonbin.io/v3/b/${import.meta.env.VITE_JSON_BIN_ID}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'X-Access-Key': import.meta.env.VITE_PUBLIC_API_KEY
+      'X-Access-Key': import.meta.env.VITE_JSON_BIN_API_KEY
     }
   })
 
