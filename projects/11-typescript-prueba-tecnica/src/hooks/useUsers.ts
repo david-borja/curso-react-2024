@@ -42,6 +42,7 @@ export function useUsers() {
     queryFn: fetchUsers,
     getNextPageParam,
     initialPageParam: 1,
+    staleTime: 1000 * 60 * 5, // a los 5m los datos se consideran "stale" y se pueden refrescar
     retry: false,
     refetchOnWindowFocus: false //  aunque haga el refech, no se verá porque los datos ya están en caché y no muestra loading. Para ver esto, tendríamos que usar la propiedad isFetching. Podríamos mostrar una notificación como que está sincronizando los datos.
   })
