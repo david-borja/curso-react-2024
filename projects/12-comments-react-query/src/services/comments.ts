@@ -21,7 +21,6 @@ export const getComments = async () => {
   }
 
   const json = await response.json()
-
   return json?.record
 }
 

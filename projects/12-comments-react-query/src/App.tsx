@@ -20,7 +20,7 @@ function App() {
 
         {isLoading && <strong>Cargando...</strong>}
         {error != null && <strong>Algo ha ido mal</strong>}
-        <Results data={[]} />
+        <Results data={data} />
 
       </div>
       <div className='col-span-1 bg-black p-8'>
