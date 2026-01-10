@@ -1,6 +1,7 @@
 export interface Comment {
   title: string
   message: string
+  isPreview?: boolean
 }
 
 export interface CommentWithId extends Comment {

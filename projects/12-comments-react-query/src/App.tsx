@@ -36,8 +36,10 @@ function App() {
 
       // actualizamos la caché de react-query manualmente para que el nuevo comentario aparezca inmediatamente
       await queryClient.setQueryData(['comments'], (oldData?: CommentWithId[]) => {
-        if (oldData == null) return [newComment]
-        return [...oldData, newComment]
+        const newCommentToAdd = structuredClone(newComment)
+        newCommentToAdd.isPreview = true
+        if (oldData == null) return [newCommentToAdd]
+        return [...oldData, newCommentToAdd]
       })
 
       // esto va a una variable llamada context que estará disponible en onError y onSettled
