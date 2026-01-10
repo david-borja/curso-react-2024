@@ -8,11 +8,11 @@ export interface CommentWithId extends Comment {
 }
 
 export const getComments = async () => {
-  const response = await fetch(`https://api.jsonbin.io/v3/b/${import.meta.env.VITE_JSON_BIN_ID}`, {
+  const response = await fetch(`https://api.jsonbin.io/v3/b/${import.meta.env.VITE_JSON_PRIVATE_BIN_ID}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'X-Access-Key': import.meta.env.VITE_JSON_BIN_API_KEY
+      'x-master-key': import.meta.env.VITE_JSON_BIN_API_KEY_MASTER
     }
   })
 
@@ -30,12 +30,11 @@ export const postComment = async (comment: Comment) => {
   const id = crypto.randomUUID()
   const newComment = { ...comment, id }
   const commentsToSave = [...comments, newComment]
-
-  const response = await fetch(`https://api.jsonbin.io/v3/b/${import.meta.env.VITE_JSON_BIN_ID}`, {
+  const response = await fetch(`https://api.jsonbin.io/v3/b/${import.meta.env.VITE_JSON_PRIVATE_BIN_ID}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      'X-Access-Key': import.meta.env.VITE_JSON_BIN_API_KEY
+      'x-master-key': import.meta.env.VITE_JSON_BIN_API_KEY_MASTER
     },
     body: JSON.stringify(commentsToSave)
   })
