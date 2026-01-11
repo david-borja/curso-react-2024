@@ -9,6 +9,7 @@ interface State {
   selectAnswer: (questionId: number, answerIndex: number) => void;
   goNextQuestion: () => void;
   goPrevQuestion: () => void;
+  reset: () => void;
 }
 
 export const useQuestionsStore = create<State>()(persist((set, get) => {
@@ -49,7 +50,8 @@ export const useQuestionsStore = create<State>()(persist((set, get) => {
       if (prevQuestion >= 0) {
         set({ currentQuestion: prevQuestion })
       }
-    }
+    },
+    reset: () => set({ questions: [], currentQuestion: 0 }) 
   }
 },
 { name: 'questions' }
