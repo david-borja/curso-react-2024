@@ -1,6 +1,6 @@
 import { useQuestionsStore } from '../store/questions'
 
-const LIMIT_QUESTIONS = 5
+const LIMIT_QUESTIONS = 0
 
 export function Start() {
   const getQuestions = useQuestionsStore(state => state.getQuestions)
