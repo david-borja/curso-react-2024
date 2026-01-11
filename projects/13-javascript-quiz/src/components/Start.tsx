@@ -1,10 +1,12 @@
 import { useQuestionsStore } from '../store/questions'
 
+const LIMIT_QUESTIONS = 5
+
 export function Start() {
   const getQuestions = useQuestionsStore(state => state.getQuestions)
 
   const handleClick = () => {
-    getQuestions(5)
+    getQuestions(LIMIT_QUESTIONS)
   }
 
   return (
