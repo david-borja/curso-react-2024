@@ -1,6 +1,6 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 import { type Question } from '../../types'
-// import data from '../../public/data.json'
 
 interface State {
   questions: Question[];
@@ -11,7 +11,7 @@ interface State {
   goPrevQuestion: () => void;
 }
 
-export const useQuestionsStore = create<State>((set, get) => {
+export const useQuestionsStore = create<State>()(persist((set, get) => {
   return {
     questions: [],
     currentQuestion: 0,
@@ -51,4 +51,8 @@ export const useQuestionsStore = create<State>((set, get) => {
       }
     }
   }
-})
+},
+{ name: 'questions' }
+))
+// por defecto lo guarda en el localStorage
+// pero se le puede indicar dónde guardarlo con: getStorage: () => sessionStorage, por ejemplo

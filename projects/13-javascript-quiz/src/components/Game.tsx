@@ -1,4 +1,5 @@
 import { useQuestionsStore } from '../store/questions'
+import { Header } from './Header'
 import { Question } from './Question'
 
 export function Game() {
@@ -11,6 +12,7 @@ export function Game() {
 
   return (
     <>
+      <Header />
       <div style={{ marginBottom: '1rem' }}>
         <button onClick={goPrevQuestion} disabled={currentQuestion === 0}>Anterior</button>
         <span style={{ margin: '0 1rem' }}>Pregunta {currentQuestion + 1} de {questions.length}</span>
